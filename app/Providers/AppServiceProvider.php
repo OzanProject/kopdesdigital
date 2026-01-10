@@ -30,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
                 $settings = \App\Models\SaasSetting::all()->pluck('value', 'key');
                 
                 if (isset($settings['mail_host'])) {
+                    // Set App Name dynamically from DB for Email Templates
+                    if (isset($settings['app_name'])) {
+                        config(['app.name' => $settings['app_name']]);
+                    }
+
                     config([
                         'mail.default' => 'smtp', // FORCE USE SMTP instead of log/local
                         'mail.mailers.smtp.host' => $settings['mail_host'],

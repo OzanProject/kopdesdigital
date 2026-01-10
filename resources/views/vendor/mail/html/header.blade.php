@@ -12,11 +12,9 @@
 <td class="header">
 <a href="{{ $url }}" style="display: inline-block;">
 @if ($logoUrl)
-    <img src="{{ $logoUrl }}" class="logo" alt="{{ config('app.name') }} Logo" style="max-height: 75px; width: auto;">
-@elseif (trim($slot) === 'Laravel')
-    {{ config('app.name') }}
+    <img src="{{ $logoUrl }}" class="logo" alt="{{ config('app.name') }}" style="max-height: 75px; width: auto; border: 0;">
 @else
-    {!! $slot !!}
+    {{ config('app.name') }}
 @endif
 </a>
 </td>
