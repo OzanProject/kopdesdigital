@@ -54,7 +54,7 @@ class MidtransService
                 ]
             ],
             'callbacks' => [
-                'finish' => route('back.subscription.index'),
+                'finish' => route('dashboard'),
             ],
             // Override Notification URL (Otomatis tanpa setting dashboard)
             'notification_url' => [route('midtrans.callback')],
