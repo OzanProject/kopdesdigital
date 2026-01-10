@@ -30,14 +30,21 @@
         $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
     @endphp
     <!-- Favicon -->
+    <!-- Favicon -->
     @php
         $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
+        if ($favicon) {
+            $favUrl = asset('storage/' . $favicon);
+            $favType = 'image/png'; // Assume PNG for uploaded
+        } else {
+            // Fallback to AdminLTE Logo if favicon.ico is troublesome
+            $favUrl = asset('adminlte3/dist/img/AdminLTELogo.png'); 
+            $favType = 'image/png';
+        }
     @endphp
-    @if($favicon)
-        <link rel="icon" href="{{ Storage::url($favicon) }}?v={{ time() }}" type="image/png">
-    @else
-        <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
-    @endif
+    <link rel="icon" href="{{ $favUrl }}?v={{ time() }}" type="{{ $favType }}">
+    <link rel="shortcut icon" href="{{ $favUrl }}?v={{ time() }}" type="{{ $favType }}">
+    <link rel="apple-touch-icon" href="{{ $favUrl }}?v={{ time() }}">
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; height: 100vh; overflow: hidden; }
