@@ -95,4 +95,55 @@ class PaymentController extends Controller
 
         return redirect()->route('payment.show', $newOrderId);
     }
+
+    public function checkStatus($order_id)
+    {
+        $transaction = SubscriptionTransaction::where('order_id', $order_id)->firstOrFail();
+        
+        // Config Midtrans
+        $midtrans = new MidtransService();
+        // Just calling constructor inits the Config
+        
+        try {
+            $status = \Midtrans\Transaction::status($order_id);
+            $type = $status->payment_type;
+            $fraud = $status->fraud_status;
+            $transaction_status = $status->transaction_status;
+
+            if ($transaction_status == 'capture') {
+                if ($fraud == 'challenge') {
+                    // Challenge
+                } else {
+                   $this->processSuccess($transaction, $status);
+                }
+            } else if ($transaction_status == 'settlement') {
+                $this->processSuccess($transaction, $status);
+            } else if ($transaction_status == 'pending') {
+                 return back()->with('error', 'Status pembayaran masih Tertunda (Pending). Silakan selesaikan pembayaran.');
+            } else if ($transaction_status == 'deny' || $transaction_status == 'expire' || $transaction_status == 'cancel') {
+                $transaction->update(['status' => 'failed']);
+                 return back()->with('error', 'Pembayaran Gagal atau Kadaluarsa.');
+            }
+
+            return back()->with('success', 'Status pembayaran diperbarui: Lunas.');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal cek status: ' . $e->getMessage());
+        }
+    }
+
+    private function processSuccess($transaction, $status)
+    {
+        $transaction->update([
+            'status' => 'paid',
+            'payment_type' => $status->payment_type ?? 'manual_check',
+            'payment_details' => json_decode(json_encode($status), true)
+        ]);
+
+        $koperasi = $transaction->koperasi;
+        $koperasi->update([
+            'status' => 'active',
+            'subscription_end_date' => now()->addDays(30)
+        ]);
+    }
 }

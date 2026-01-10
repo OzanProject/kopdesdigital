@@ -17,6 +17,9 @@
     <a href="{{ route('payment.show', $pendingTrans->order_id) }}" class="btn btn-light font-weight-bold ml-2 text-dark shadow-sm">
         <i class="fas fa-credit-card mr-1"></i> Bayar Sekarang
     </a>
+    <a href="{{ route('payment.check', $pendingTrans->order_id) }}" class="btn btn-outline-dark font-weight-bold ml-2 shadow-sm">
+        <i class="fas fa-sync mr-1"></i> Cek Status (Refresh)
+    </a>
 </div>
 @endif
 

@@ -58,6 +58,10 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
 
         // Knowledge Base (Pusat Bantuan)
         Route::get('/knowledge-base', [\App\Http\Controllers\SaaS\KnowledgeBaseController::class, 'index'])->name('knowledge-base.index');
+        
+        // Manual Payment Check
+        Route::get('/payment/check/{order_id}', [\App\Http\Controllers\PaymentController::class, 'checkStatus'])->name('payment.check');
+
         Route::get('/knowledge-base/search', [\App\Http\Controllers\SaaS\KnowledgeBaseController::class, 'search'])->name('knowledge-base.search');
         Route::get('/knowledge-base/category/{slug}', [\App\Http\Controllers\SaaS\KnowledgeBaseController::class, 'category'])->name('knowledge-base.category');
         Route::get('/knowledge-base/article/{slug}', [\App\Http\Controllers\SaaS\KnowledgeBaseController::class, 'show'])->name('knowledge-base.show');
