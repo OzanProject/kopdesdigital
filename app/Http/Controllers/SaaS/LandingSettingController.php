@@ -27,12 +27,24 @@ class LandingSettingController extends Controller
             $path = $request->file('seo_og_image')->store('landing', 'public');
             SaasSetting::updateOrCreate(['key' => 'seo_og_image'], ['value' => $path]);
         }
+
+        // Handle Branding Files
+        if ($request->hasFile('app_logo')) {
+            $path = $request->file('app_logo')->store('branding', 'public');
+            SaasSetting::updateOrCreate(['key' => 'app_logo'], ['value' => $path]);
+        }
+        if ($request->hasFile('favicon')) {
+            $path = $request->file('favicon')->store('branding', 'public');
+            SaasSetting::updateOrCreate(['key' => 'favicon'], ['value' => $path]);
+        }
         
         // Handle Production Toggle (Checkbox doesn't send "0" when unchecked)
         $isProduction = $request->has('midtrans_is_production') ? '1' : '0';
         SaasSetting::updateOrCreate(['key' => 'midtrans_is_production'], ['value' => $isProduction]);
 
-        $data = $request->except(['_token', '_method', 'hero_image', 'seo_og_image', 'midtrans_is_production']);
+        SaasSetting::updateOrCreate(['key' => 'midtrans_is_production'], ['value' => $isProduction]);
+
+        $data = $request->except(['_token', '_method', 'hero_image', 'seo_og_image', 'midtrans_is_production', 'app_logo', 'favicon']);
 
         foreach ($data as $key => $value) {
             SaasSetting::updateOrCreate(

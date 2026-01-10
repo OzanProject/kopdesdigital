@@ -7,7 +7,10 @@
     <div class="card-header p-0 border-bottom-0">
         <ul class="nav nav-tabs" id="landing-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="hero-tab" data-toggle="pill" href="#hero" role="tab" aria-controls="hero" aria-selected="true">Hero Section</a>
+                <a class="nav-link active" id="branding-tab" data-toggle="pill" href="#branding" role="tab" aria-controls="branding" aria-selected="true">Logo & Branding</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="hero-tab" data-toggle="pill" href="#hero" role="tab" aria-controls="hero" aria-selected="false">Hero Section</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="seo-tab" data-toggle="pill" href="#seo" role="tab" aria-controls="seo" aria-selected="false">SEO Settings</a>
@@ -32,8 +35,36 @@
             @method('PUT')
             <div class="tab-content" id="landing-tabContent">
                 
+                <!-- BRANDING SECTION -->
+                 <div class="tab-pane fade show active" id="branding" role="tabpanel" aria-labelledby="branding-tab">
+                    <div class="form-group">
+                        <label>Nama Aplikasi (App Name)</label>
+                        <input type="text" name="app_name" class="form-control" value="{{ $settings['app_name'] ?? config('app.name') }}">
+                        <small class="text-muted">Digunakan di Email, Halaman Login, dan Title Bar.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Logo Aplikasi</label>
+                        @if(isset($settings['app_logo']))
+                            <div class="mb-2 p-2 bg-light border rounded" style="display:inline-block">
+                                <img src="{{ asset('storage/'.$settings['app_logo']) }}" style="height: 50px;">
+                            </div>
+                        @else
+                            <div class="alert alert-warning py-2 small"><i class="fas fa-exclamation-triangle"></i> Belum ada logo diupload</div>
+                        @endif
+                        <input type="file" name="app_logo" class="form-control-file">
+                        <small class="text-muted">Akan muncul di Header Email dan Halaman Login/Reset Password.</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Favicon</label>
+                         @if(isset($settings['favicon']))
+                            <div class="mb-2"><img src="{{ asset('storage/'.$settings['favicon']) }}" style="height: 32px;"></div>
+                        @endif
+                        <input type="file" name="favicon" class="form-control-file">
+                    </div>
+                </div>
+
                 <!-- HERO SECTION -->
-                <div class="tab-pane fade show active" id="hero" role="tabpanel" aria-labelledby="hero-tab">
+                <div class="tab-pane fade" id="hero" role="tabpanel" aria-labelledby="hero-tab">
                     <div class="form-group">
                         <label>Judul Utama (Hero Title)</label>
                         <input type="text" name="hero_title" class="form-control" value="{{ $settings['hero_title'] ?? '' }}">
