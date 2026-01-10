@@ -25,7 +25,11 @@ class AppServiceProvider extends ServiceProvider
         // If not running in console (i.e. web request), use the actual Host
         if (!app()->runningInConsole() && isset($_SERVER['HTTP_HOST'])) {
              $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
-             config(['app.url' => $protocol . $_SERVER['HTTP_HOST']]);
+             $currentUrl = $protocol . $_SERVER['HTTP_HOST'];
+             config([
+                 'app.url' => $currentUrl,
+                 'app.asset_url' => $currentUrl, // Force asset() to use domain
+             ]);
         }
 
         // Force Queue to Sync (Immediate Delivery) for Shared Hosting
