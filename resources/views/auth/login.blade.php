@@ -9,7 +9,9 @@
     @php
         $settings = \App\Models\SaasSetting::pluck('value', 'key')->toArray();
         $appName = $settings['app_name'] ?? config('app.name');
-        $ogImage = isset($settings['seo_og_image']) ? asset('storage/'.$settings['seo_og_image']) : asset('img/AdminLTELogo.png');
+        // Fix Path: adminlte3/dist/img/AdminLTELogo.png
+        $defaultLogo = asset('adminlte3/dist/img/AdminLTELogo.png');
+        $ogImage = isset($settings['seo_og_image']) ? asset('storage/'.$settings['seo_og_image']) : $defaultLogo;
     @endphp
     <meta property="og:title" content="Login - {{ $appName }}">
     <meta property="og:description" content="Login ke dalam sistem aplikasi {{ $appName }}">
@@ -27,10 +29,14 @@
     @php
         $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
     @endphp
+    <!-- Favicon -->
+    @php
+        $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
+    @endphp
     @if($favicon)
-        <link rel="icon" href="{{ Storage::url($favicon) }}" type="image/png">
+        <link rel="icon" href="{{ Storage::url($favicon) }}?v={{ time() }}" type="image/png">
     @else
-        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
     @endif
 
     <style>
