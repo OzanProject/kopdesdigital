@@ -9,9 +9,31 @@
     @php
         $settings = \App\Models\SaasSetting::pluck('value', 'key')->toArray();
         $appName = $settings['app_name'] ?? config('app.name');
-        // Fix Path: adminlte3/dist/img/AdminLTELogo.png
+        
+        // Define Default Logo (AdminLTE)
         $defaultLogo = asset('adminlte3/dist/img/AdminLTELogo.png');
-        $ogImage = isset($settings['seo_og_image']) ? asset('storage/'.$settings['seo_og_image']) : $defaultLogo;
+        
+        // Logic: OG Image -> SEO Image > App Logo > Default
+        if (isset($settings['seo_og_image'])) {
+            $ogImage = asset('storage/' . $settings['seo_og_image']);
+        } elseif (isset($settings['app_logo'])) {
+            $ogImage = asset('storage/' . $settings['app_logo']);
+        } else {
+            $ogImage = $defaultLogo;
+        }
+
+        // Logic: Favicon -> Favicon > App Logo > Default
+        $favicon = $settings['favicon'] ?? null;
+        $appLogo = $settings['app_logo'] ?? null;
+
+        if ($favicon) {
+            $favUrl = asset('storage/' . $favicon);
+        } elseif ($appLogo) {
+            $favUrl = asset('storage/' . $appLogo);
+        } else {
+            $favUrl = $defaultLogo;
+        }
+        $favType = 'image/png'; 
     @endphp
     <meta property="og:title" content="Login - {{ $appName }}">
     <meta property="og:description" content="Login ke dalam sistem aplikasi {{ $appName }}">
@@ -26,22 +48,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
-    @php
-        $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
-    @endphp
-    <!-- Favicon -->
-    <!-- Favicon -->
-    @php
-        $favicon = \App\Models\SaasSetting::where('key', 'favicon')->value('value');
-        if ($favicon) {
-            $favUrl = asset('storage/' . $favicon);
-            $favType = 'image/png'; // Assume PNG for uploaded
-        } else {
-            // Fallback to AdminLTE Logo if favicon.ico is troublesome
-            $favUrl = asset('adminlte3/dist/img/AdminLTELogo.png'); 
-            $favType = 'image/png';
-        }
-    @endphp
     <link rel="icon" href="{{ $favUrl }}?v={{ time() }}" type="{{ $favType }}">
     <link rel="shortcut icon" href="{{ $favUrl }}?v={{ time() }}" type="{{ $favType }}">
     <link rel="apple-touch-icon" href="{{ $favUrl }}?v={{ time() }}">
