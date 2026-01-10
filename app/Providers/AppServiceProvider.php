@@ -31,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
                 
                 if (isset($settings['mail_host'])) {
                     config([
+                        'mail.default' => 'smtp', // FORCE USE SMTP instead of log/local
                         'mail.mailers.smtp.host' => $settings['mail_host'],
                         'mail.mailers.smtp.port' => $settings['mail_port'] ?? 587,
                         'mail.mailers.smtp.encryption' => $settings['mail_encryption'] ?? 'tls',
