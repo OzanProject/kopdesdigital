@@ -105,10 +105,11 @@ class PaymentController extends Controller
         // Just calling constructor inits the Config
         
         try {
-            $status = \Midtrans\Transaction::status($order_id);
-            $type = $status->payment_type;
-            $fraud = $status->fraud_status;
-            $transaction_status = $status->transaction_status;
+        try {
+            $status = (object) \Midtrans\Transaction::status($order_id);
+            $type = $status->payment_type ?? null;
+            $fraud = $status->fraud_status ?? null;
+            $transaction_status = $status->transaction_status ?? null;
 
             if ($transaction_status == 'capture') {
                 if ($fraud == 'challenge') {
