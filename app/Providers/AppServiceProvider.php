@@ -21,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
 
+        // 1. Force APP_URL to match the current Domain (Fixes broken images in Email)
+        // If not running in console (i.e. web request), use the actual Host
+        if (!app()->runningInConsole() && isset($_SERVER['HTTP_HOST'])) {
+             $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+             config(['app.url' => $protocol . $_SERVER['HTTP_HOST']]);
+        }
+
         // Force Queue to Sync (Immediate Delivery) for Shared Hosting
         // This overrides .env QUEUE_CONNECTION=database which causes emails to not send if no worker is running
         config(['queue.default' => 'sync']);
