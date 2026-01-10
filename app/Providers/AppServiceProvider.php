@@ -26,6 +26,13 @@ class AppServiceProvider extends ServiceProvider
         if (!app()->runningInConsole() && isset($_SERVER['HTTP_HOST'])) {
              $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
              $currentUrl = $protocol . $_SERVER['HTTP_HOST'];
+             
+             // Force HTTPS if not localhost
+             if (!str_contains($currentUrl, 'localhost') && !str_contains($currentUrl, '127.0.0.1')) {
+                 \Illuminate\Support\Facades\URL::forceScheme('https');
+                 $currentUrl = str_replace('http://', 'https://', $currentUrl);
+             }
+
              config([
                  'app.url' => $currentUrl,
                  'app.asset_url' => $currentUrl, // Force asset() to use domain
