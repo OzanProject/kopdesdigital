@@ -31,7 +31,15 @@ class PaymentController extends Controller
 
     public function callback(Request $request)
     {
-        $serverKey = \App\Models\SaasSetting::where('key', 'midtrans_server_key')->value('value') ?? config('services.midtrans.server_key');
+        // Fix: Retrieve correct key based on Production/Sandbox toggle
+        $settings = \App\Models\SaasSetting::pluck('value', 'key');
+        $isProduction = isset($settings['midtrans_is_production']) && $settings['midtrans_is_production'] === '1';
+        
+        if ($isProduction) {
+            $serverKey = $settings['midtrans_server_key_production'] ?? '';
+        } else {
+            $serverKey = $settings['midtrans_server_key_sandbox'] ?? config('services.midtrans.server_key');
+        }
         
         $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
         
