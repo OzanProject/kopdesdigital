@@ -36,11 +36,48 @@
                     <!-- Renew Link Option -->
                     <form action="{{ route('payment.renew', $transaction->order_id) }}" method="POST">
                 @else
-                    <div id="snap-container"></div>
-                    
-                    <button id="pay-button" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm py-3 mb-3">
-                        <i class="fas fa-lock me-2"></i> Bayar Sekarang
-                    </button>
+                    <div id="payment-method-selector" class="mb-4">
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="payment_method" id="method-online" value="online" checked autocomplete="off">
+                            <label class="btn btn-outline-primary" for="method-online">
+                                <i class="fas fa-credit-card"></i> Online (Midtrans)
+                            </label>
+                          
+                            <input type="radio" class="btn-check" name="payment_method" id="method-manual" value="manual" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="method-manual">
+                                <i class="fas fa-university"></i> Transfer Manual
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Online Payment (Midtrans) -->
+                    <div id="payment-online">
+                        <div id="snap-container"></div>
+                        <button id="pay-button" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm py-3 mb-3">
+                            <i class="fas fa-lock me-2"></i> Bayar Sekarang (Online)
+                        </button>
+                    </div>
+
+                    <!-- Manual Payment -->
+                    <div id="payment-manual" style="display: none;">
+                        @if(!empty($settings['manual_transfer_info']))
+                            <div class="alert alert-info text-start">
+                                <h6><i class="fas fa-info-circle"></i> Instruksi Pembayaran:</h6>
+                                {!! nl2br(e($settings['manual_transfer_info'])) !!}
+                            </div>
+                            
+                            <form action="{{ route('payment.manual.store', $transaction->order_id) }}" method="POST" onsubmit="return confirm('Apakah Anda sudah melakukan transfer?');">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm py-3 mb-3">
+                                    <i class="fas fa-check-circle me-2"></i> Saya Sudah Transfer
+                                </button>
+                            </form>
+                        @else
+                            <div class="alert alert-warning">
+                                Admin belum mengatur informasi rekening manual. Silakan pilih Online Payment.
+                            </div>
+                        @endif
+                    </div>
                 @endif
 
                 <!-- Renew Link Option (Always visible in case of expiry) -->
@@ -58,6 +95,30 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const methodOnline = document.getElementById('method-online');
+        const methodManual = document.getElementById('method-manual');
+        const divOnline = document.getElementById('payment-online');
+        const divManual = document.getElementById('payment-manual');
+
+        function togglePayment() {
+            if (methodManual.checked) {
+                divOnline.style.display = 'none';
+                divManual.style.display = 'block';
+            } else {
+                divOnline.style.display = 'block';
+                divManual.style.display = 'none';
+            }
+        }
+
+        if (methodOnline && methodManual) {
+            methodOnline.addEventListener('change', togglePayment);
+            methodManual.addEventListener('change', togglePayment);
+        }
+    });
+</script>
 
 @if(!empty($transaction->snap_token))
 <!-- Midtrans Snap JS -->

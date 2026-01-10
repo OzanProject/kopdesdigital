@@ -164,6 +164,13 @@
                     </div>
                     
                     <hr>
+                    <h5 class="text-primary"><i class="fas fa-university"></i> Pengaturan Transfer Manual</h5>
+                    <div class="form-group">
+                        <label>Informasi Rekening & Instruksi Transfer</label>
+                        <textarea name="manual_transfer_info" class="form-control" rows="5" placeholder="Contoh: Transfer ke BCA 12345678 a.n PT KopDes, lalu konfirmasi WA...">{{ $settings['manual_transfer_info'] ?? '' }}</textarea>
+                        <small class="text-muted">Informasi ini akan muncul jika user memilih metode "Transfer Manual". Kosongkan jika ingin menonaktifkan manual transfer.</small>
+                    </div>
+                    <hr>
                     <div class="form-check mt-3">
                          <input type="checkbox" class="form-check-input" name="midtrans_is_production" value="1" {{ isset($settings['midtrans_is_production']) && $settings['midtrans_is_production'] ? 'checked' : '' }}>
                         <label class="form-check-label font-weight-bold">Aktifkan Mode Produksi (Live)</label>
