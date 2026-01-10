@@ -92,6 +92,8 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
         // Invoice/Transaction Management
         Route::get('/invoices', [\App\Http\Controllers\SaaS\InvoiceController::class, 'index'])->name('invoices.index');
         Route::get('/invoices/{id}', [\App\Http\Controllers\SaaS\InvoiceController::class, 'show'])->name('invoices.show');
+        Route::post('/invoices/{id}/approve', [\App\Http\Controllers\SaaS\InvoiceController::class, 'approve'])->name('invoices.approve');
+
 
         // Landing Page CMS
         Route::get('/landing-settings', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'index'])->name('landing-settings.index');

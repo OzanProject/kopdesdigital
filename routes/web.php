@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function() {
     Route::get('/payment/success', [\App\Http\Controllers\PaymentController::class, 'success'])->name('payment.success');
     Route::post('/payment/{order_id}/renew', [\App\Http\Controllers\PaymentController::class, 'renew'])->name('payment.renew');
+    Route::post('/payment/{order_id}/manual', [\App\Http\Controllers\PaymentController::class, 'storeManual'])->name('payment.manual.store');
     Route::get('/payment/{order_id}', [\App\Http\Controllers\PaymentController::class, 'show'])->name('payment.show');
 });
 
