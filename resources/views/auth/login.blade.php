@@ -6,10 +6,9 @@
     <title>Login - {{ \App\Models\SaasSetting::where('key', 'app_name')->value('value') ?? config('app.name') }}</title>
     
     <!-- Open Graph / SEO -->
-    @php
         $settings = \App\Models\SaasSetting::pluck('value', 'key')->toArray();
         $appName = $settings['app_name'] ?? config('app.name');
-        $ogImage = isset($settings['seo_og_image']) ? Storage::url($settings['seo_og_image']) : asset('img/AdminLTELogo.png');
+        $ogImage = isset($settings['seo_og_image']) ? asset('storage/'.$settings['seo_og_image']) : asset('img/AdminLTELogo.png');
     @endphp
     <meta property="og:title" content="Login - {{ $appName }}">
     <meta property="og:description" content="Login ke dalam sistem aplikasi {{ $appName }}">
