@@ -124,6 +124,15 @@
     <div class="row no-print">
         <div class="col-12">
             <button onclick="window.print()" class="btn btn-default"><i class="fas fa-print"></i> Print Invoice</button>
+
+            @if($invoice->status == 'pending')
+                 <form action="{{ route('invoices.approve', $invoice->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Setujui pembayaran ini? Akun koperasi akan diaktifkan.');">
+                    @csrf
+                    <button type="submit" class="btn btn-success float-right ml-2" style="margin-left: 10px;">
+                        <i class="fas fa-check-double"></i> Setujui Pembayaran (Manual)
+                    </button>
+                </form>
+            @endif
             
             <a href="{{ route('invoices.index') }}" class="btn btn-secondary float-right">
                 <i class="fas fa-arrow-left"></i> Kembali
