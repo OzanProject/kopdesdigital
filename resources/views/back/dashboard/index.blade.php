@@ -153,7 +153,7 @@
                 </h3>
             </div>
             <div class="card-body pt-0">
-                <p>Status: {{ $package ? 'Aktif' : 'Tidak Diketahui' }}</p>
+                <p>Status: {{ $currentKoperasi->status == 'active' ? 'Aktif' : 'Menunggu Pembayaran' }}</p>
                 
                 <div class="progress-group">
                     Kuota Nasabah
