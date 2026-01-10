@@ -21,8 +21,8 @@ Software ini dijual dengan sistem **Sekali Bayar (Lifetime)** untuk Source Code 
 | **Support** | 1 Bulan | 6 Bulan Prioritas |
 
 👉 **Tertarik Membeli?**
-Hubungi WhatsApp: **08xx-xxxx-xxxx** (OzanProject)
-Email: **admin@ozanproject.com**
+Dapatkan lisensi resmi hanya di website kami:
+🌐 **[https://ozanproject.site](https://ozanproject.site)**
 
 ---
 
