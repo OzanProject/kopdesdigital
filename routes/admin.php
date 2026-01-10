@@ -97,6 +97,8 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
         Route::get('/landing-settings', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'index'])->name('landing-settings.index');
         Route::put('/landing-settings', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'update'])->name('landing-settings.update');
         Route::post('/landing-settings/test-email', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'testEmail'])->name('landing-settings.test-email');
+        Route::post('/landing-settings/clear-cache', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'clearCache'])->name('landing-settings.clear-cache');
+
 
         Route::resource('landing-features', \App\Http\Controllers\SaaS\LandingFeatureController::class);
         Route::resource('landing-faqs', \App\Http\Controllers\SaaS\LandingFaqController::class);

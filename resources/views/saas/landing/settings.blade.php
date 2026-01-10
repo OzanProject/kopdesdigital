@@ -21,6 +21,9 @@
         </ul>
     </div>
     <div class="card-body">
+         <form id="clearCacheForm" action="{{ route('landing-settings.clear-cache') }}" method="POST">
+            @csrf
+        </form>
         <form id="testEmailForm" action="{{ route('landing-settings.test-email') }}" method="POST">
             @csrf
         </form>
@@ -175,9 +178,18 @@
                             <input type="email" name="test_email_to" class="form-control" placeholder="Masukkan email tujuan test..." form="testEmailForm">
                             <span class="input-group-append">
                                 <button type="submit" class="btn btn-info" form="testEmailForm">Kirim Email Test</button>
-                            </span>
-                        </div>
+                         </div>
                         <small class="text-muted">Simpan pengaturan terlebih dahulu sebelum melakukan test.</small>
+                    </div>
+                    
+                    <div class="mt-4 border-top pt-3">
+                         <h5 class="mb-3 text-warning"><i class="fas fa-exclamation-circle"></i> Troubleshooting</h5>
+                         <p class="small text-muted">
+                            1. Jika "Alert Sukses" tapi email tidak masuk, cek folder <b>SPAM</b>.<br>
+                            2. Login ke <b>Webmail Hosting</b> (Roundcube), cek kotak masuk (Inbox) atau Sent.<br>
+                            3. Pastikan konfigurasi config tidak nyangkut dengan klik tombol di bawah.
+                         </p>
+                         <button type="submit" form="clearCacheForm" class="btn btn-warning btn-sm"><i class="fas fa-broom"></i> Bersihkan Cache Sistem</button>
                     </div>
                 </div>
 

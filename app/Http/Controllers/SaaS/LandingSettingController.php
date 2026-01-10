@@ -73,4 +73,12 @@ class LandingSettingController extends Controller
             return back()->with('error', 'Gagal kirim email: ' . $e->getMessage());
         }
     }
+
+    public function clearCache()
+    {
+        \Artisan::call('config:clear');
+        \Artisan::call('cache:clear');
+        \Artisan::call('view:clear');
+        return back()->with('success', 'Cache sistem berhasil dibersihkan!');
+    }
 }
