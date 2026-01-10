@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{ \App\Models\SaasSetting::where('key', 'app_name')->value('value') ?? config('app.name') }}</title>
     
+    <!-- Open Graph / SEO -->
+    @php
+        $settings = \App\Models\SaasSetting::pluck('value', 'key')->toArray();
+        $appName = $settings['app_name'] ?? config('app.name');
+        $ogImage = isset($settings['seo_og_image']) ? Storage::url($settings['seo_og_image']) : asset('img/AdminLTELogo.png');
+    @endphp
+    <meta property="og:title" content="Login - {{ $appName }}">
+    <meta property="og:description" content="Login ke dalam sistem aplikasi {{ $appName }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
