@@ -52,7 +52,12 @@ class MidtransService
                     'quantity' => 1,
                     'name' => 'Paket ' . $transaction->package->name . ' (1 Bulan)',
                 ]
-            ]
+            ],
+            'callbacks' => [
+                'finish' => route('back.subscription.index'),
+            ],
+            // Override Notification URL (Otomatis tanpa setting dashboard)
+            'notification_url' => [route('midtrans.callback')],
         ];
 
         try {
