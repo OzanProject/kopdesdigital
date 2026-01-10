@@ -24,6 +24,9 @@
         </ul>
     </div>
     <div class="card-body">
+          <form id="fixStorageForm" action="{{ route('landing-settings.fix-storage') }}" method="POST">
+            @csrf
+        </form>
          <form id="clearCacheForm" action="{{ route('landing-settings.clear-cache') }}" method="POST">
             @csrf
         </form>
@@ -217,10 +220,15 @@
                          <h5 class="mb-3 text-warning"><i class="fas fa-exclamation-circle"></i> Troubleshooting</h5>
                          <p class="small text-muted">
                             1. Jika "Alert Sukses" tapi email tidak masuk, cek folder <b>SPAM</b>.<br>
+                            1. Jika "Alert Sukses" tapi email tidak masuk, cek folder <b>SPAM</b>.<br>
                             2. Login ke <b>Webmail Hosting</b> (Roundcube), cek kotak masuk (Inbox) atau Sent.<br>
-                            3. Pastikan konfigurasi config tidak nyangkut dengan klik tombol di bawah.
+                            3. Pastikan konfigurasi config tidak nyangkut dengan klik tombol di bawah.<br>
+                            4. Jika <b>Logo Pecah</b>, klik tombol "Fix Storage Link" di bawah.
                          </p>
-                         <button type="submit" form="clearCacheForm" class="btn btn-warning btn-sm"><i class="fas fa-broom"></i> Bersihkan Cache Sistem</button>
+                         <div class="d-flex gap-2">
+                             <button type="submit" form="clearCacheForm" class="btn btn-warning btn-sm mr-2"><i class="fas fa-broom"></i> Bersihkan Cache Sistem</button>
+                             <button type="submit" form="fixStorageForm" class="btn btn-danger btn-sm"><i class="fas fa-link"></i> Fix Storage Link (Gambar Error)</button>
+                         </div>
                     </div>
                 </div>
 

@@ -13,9 +13,6 @@
 <a href="{{ $url }}" style="display: inline-block;">
 @if ($logoUrl)
     <img src="{{ $logoUrl }}" class="logo" alt="{{ config('app.name') }}" style="max-height: 75px; width: auto; border: 0;">
-    <!-- DEBUG INFO: START -->
-    <div style="font-size: 10px; color: #ccc; margin-top: 5px;">Debug URL: {{ $logoUrl }}</div>
-    <!-- DEBUG INFO: END -->
 @else
     {{ config('app.name') }}
 @endif

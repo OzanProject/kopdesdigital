@@ -93,4 +93,26 @@ class LandingSettingController extends Controller
         \Artisan::call('view:clear');
         return back()->with('success', 'Cache sistem berhasil dibersihkan!');
     }
+
+    public function fixStorageLink()
+    {
+        try {
+            $target = storage_path('app/public');
+            $link = public_path('storage');
+    
+            if (file_exists($link)) {
+                // If it's a file or symlink, delete it
+                // Note: On Windows, symlink to directory is treated as directory, but we should use unlink or rmdir specific checks if needed.
+                // For simplified approach:
+                @unlink($link);
+            }
+    
+            // Create symlink
+            \Illuminate\Support\Facades\Artisan::call('storage:link');
+            
+            return back()->with('success', 'Storage Link berhasil diperbaiki! Directory: ' . $link . ' -> ' . $target);
+        } catch (\Exception $e) {
+             return back()->with('error', 'Gagal memperbaiki Storage Link: ' . $e->getMessage());
+        }
+    }
 }
