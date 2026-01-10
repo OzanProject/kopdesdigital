@@ -21,6 +21,9 @@
         </ul>
     </div>
     <div class="card-body">
+        <form id="testEmailForm" action="{{ route('landing-settings.test-email') }}" method="POST">
+            @csrf
+        </form>
         <form action="{{ route('landing-settings.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -164,6 +167,17 @@
                     <div class="form-group">
                         <label>From Name</label>
                         <input type="text" name="mail_from_name" class="form-control" value="{{ $settings['mail_from_name'] ?? '' }}" placeholder="KopDes Digital">
+                    </div>
+
+                    <div class="mt-4 border-top pt-3">
+                         <h5 class="mb-3"><i class="fas fa-paper-plane"></i> Test Koneksi Email</h5>
+                         <div class="input-group">
+                            <input type="email" name="test_email_to" class="form-control" placeholder="Masukkan email tujuan test..." form="testEmailForm">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-info" form="testEmailForm">Kirim Email Test</button>
+                            </span>
+                        </div>
+                        <small class="text-muted">Simpan pengaturan terlebih dahulu sebelum melakukan test.</small>
                     </div>
                 </div>
 

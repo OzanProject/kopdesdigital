@@ -43,4 +43,34 @@ class LandingSettingController extends Controller
 
         return redirect()->back()->with('success', 'Pengaturan Landing Page berhasil diperbarui.');
     }
+
+    public function testEmail(Request $request)
+    {
+        $request->validate(['test_email_to' => 'required|email']);
+
+        try {
+            // Force reload config from DB to ensure latest settings are used
+            $settings = SaasSetting::pluck('value', 'key');
+            if (isset($settings['mail_host'])) {
+                config([
+                    'mail.mailers.smtp.host' => $settings['mail_host'],
+                    'mail.mailers.smtp.port' => $settings['mail_port'] ?? 587,
+                    'mail.mailers.smtp.encryption' => $settings['mail_encryption'] ?? 'tls',
+                    'mail.mailers.smtp.username' => $settings['mail_username'],
+                    'mail.mailers.smtp.password' => $settings['mail_password'],
+                    'mail.from.address' => $settings['mail_from_address'] ?? 'noreply@koperasi.com',
+                    'mail.from.name' => $settings['mail_from_name'] ?? 'KopDes Digital',
+                ]);
+            }
+
+            \Mail::raw('Ini adalah email percobaan tes koneksi SMTP dari sistem Koperasi SaaS.', function ($message) use ($request) {
+                $message->to($request->test_email_to)
+                        ->subject('Test Koneksi SMTP Berhasil!');
+            });
+
+            return back()->with('success', 'Email berhasil dikirim ke ' . $request->test_email_to . '. Koneksi SMTP Aman!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal kirim email: ' . $e->getMessage());
+        }
+    }
 }

@@ -96,6 +96,8 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
         // Landing Page CMS
         Route::get('/landing-settings', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'index'])->name('landing-settings.index');
         Route::put('/landing-settings', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'update'])->name('landing-settings.update');
+        Route::post('/landing-settings/test-email', [\App\Http\Controllers\SaaS\LandingSettingController::class, 'testEmail'])->name('landing-settings.test-email');
+
         Route::resource('landing-features', \App\Http\Controllers\SaaS\LandingFeatureController::class);
         Route::resource('landing-faqs', \App\Http\Controllers\SaaS\LandingFaqController::class);
         Route::resource('landing-testimonials', \App\Http\Controllers\SaaS\LandingTestimonialController::class);
