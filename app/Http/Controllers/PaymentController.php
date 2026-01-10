@@ -132,6 +132,25 @@ class PaymentController extends Controller
         }
     }
 
+    public function storeManual($order_id)
+    {
+        $transaction = SubscriptionTransaction::where('order_id', $order_id)->firstOrFail();
+        
+        // Ensure user is authorized
+        if (auth()->check() && $transaction->koperasi_id !== auth()->user()->koperasi_id) {
+           abort(403);
+        }
+
+        $transaction->update([
+            'status' => 'pending', // Pending approval
+            'payment_type' => 'manual_transfer',
+            'notes' => 'User telah melakukan konfirmasi transfer manual. Menunggu verifikasi admin.',
+            'payment_details' => ['method' => 'manual', 'confirmed_at' => now()]
+        ]);
+
+        return redirect()->route('payment.success')->with('manual_pending', true);
+    }
+
     private function processSuccess($transaction, $status)
     {
         $transaction->update([
