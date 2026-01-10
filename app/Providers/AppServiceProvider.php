@@ -21,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
 
+        // Force Queue to Sync (Immediate Delivery) for Shared Hosting
+        // This overrides .env QUEUE_CONNECTION=database which causes emails to not send if no worker is running
+        config(['queue.default' => 'sync']);
+
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('saas_settings')) {
                 $settings = \App\Models\SaasSetting::all()->pluck('value', 'key');
