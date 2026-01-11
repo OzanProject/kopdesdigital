@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
         
         // SHU Management
         Route::resource('shu', \App\Http\Controllers\SaaS\ShuController::class);
-        Route::post('shu/{shu}/publish', [\App\Http\Controllers\SaaS\ShuController::class, 'publish'])->name('shu.publish');
+        Route::match(['get', 'post'], 'shu/{shu}/publish', [\App\Http\Controllers\SaaS\ShuController::class, 'publish'])->name('shu.publish');
         Route::get('/laporan/print', [\App\Http\Controllers\SaaS\LaporanController::class, 'print'])->name('laporan.print');
         
         // User Management
