@@ -39,7 +39,7 @@ Route::middleware(['auth'])->prefix('member')->name('member.')->group(function()
     Route::resource('pinjaman', \App\Http\Controllers\Member\PinjamanController::class);
     Route::resource('shu', \App\Http\Controllers\Member\ShuController::class)->only(['index']);
     
-    // Profile
+    // Profile Routes (Member)
     Route::get('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/card', [\App\Http\Controllers\Member\ProfileController::class, 'card'])->name('profile.card');
 });
