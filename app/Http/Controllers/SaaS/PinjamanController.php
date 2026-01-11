@@ -35,6 +35,7 @@ class PinjamanController extends Controller
         $validated['koperasi_id'] = Auth::user()->koperasi_id;
         $validated['status'] = 'pending';
         $validated['tanggal_pengajuan'] = now();
+        $validated['kode_pinjaman'] = \App\Models\Pinjaman::generateKode(Auth::user()->koperasi_id);
 
         Pinjaman::create($validated);
 
