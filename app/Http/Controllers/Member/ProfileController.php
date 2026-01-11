@@ -18,6 +18,14 @@ class ProfileController extends Controller
         return view('member.profile.edit', compact('user', 'nasabah'));
     }
 
+    /**
+     * Alias for index to handle stale route cache on server
+     */
+    public function edit() 
+    {
+        return $this->index();
+    }
+
     public function update(Request $request)
     {
         $user = Auth::user();

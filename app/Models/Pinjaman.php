@@ -51,4 +51,34 @@ class Pinjaman extends Model
         $number = intval(substr($last->kode_pinjaman, -3)) + 1;
         return $prefix . str_pad($number, 3, '0', STR_PAD_LEFT);
     }
+    public function getJumlahPinjamanAttribute()
+    {
+        return $this->jumlah_pengajuan;
+    }
+
+    public function getTotalJumlahAttribute()
+    {
+        // If approved, calculate based on installments sum effectively
+        if ($this->status == 'approved' || $this->status == 'lunas') {
+             // Prefer summing actual installments if they exist
+             $sum = $this->angsurans->sum('jumlah_bayar');
+             if ($sum > 0) return $sum;
+
+             // Fallback calculation
+             $bunga = $this->jumlah_disetujui * ($this->bunga_persen / 100) * $this->tenor_bulan;
+             return $this->jumlah_disetujui + $bunga;
+        }
+        return $this->jumlah_pengajuan;
+    }
+
+    public function getSisaTagihanAttribute()
+    {
+        if ($this->status == 'lunas') return 0;
+        if ($this->status == 'approved') {
+             $total = $this->total_jumlah;
+             $paid = $this->angsurans->where('status', 'paid')->sum('jumlah_bayar');
+             return max(0, $total - $paid);
+        }
+        return $this->jumlah_pengajuan; // Or 0 for pending? Usually pending shows requested amount.
+    }
 }

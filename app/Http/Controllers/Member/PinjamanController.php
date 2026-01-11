@@ -48,14 +48,12 @@ class PinjamanController extends Controller
             'koperasi_id' => $nasabah->koperasi_id,
             'nasabah_id' => $nasabah->id,
             'kode_pinjaman' => \App\Models\Pinjaman::generateKode($nasabah->koperasi_id),
-            'jumlah_pinjaman' => $request->jumlah,
+            'jumlah_pengajuan' => $request->jumlah,
             'tenor_bulan' => $request->tenor,
-            'bunga_persen' => 0, // Laravel cast will handle this
+            'bunga_persen' => 0, // Admin will determine? or default
             'status' => 'pending',
-            'tanggal_pengajuan' => now(), // Laravel cast will handle this
+            'tanggal_pengajuan' => now(),
             'keterangan' => $request->keterangan,
-            'total_jumlah' => $request->jumlah,
-            'sisa_tagihan' => $request->jumlah,
         ]);
 
         return redirect()->route('member.pinjaman.index')->with('success', 'Pengajuan pinjaman berhasil dikirim. Harap menunggu persetujuan admin.');
