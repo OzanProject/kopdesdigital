@@ -10,17 +10,29 @@
 @endphp
 
 @if($currentKoperasi && $currentKoperasi->status == 'pending_payment' && $pendingTrans)
-<div class="alert alert-warning alert-dismissible">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <h5><i class="icon fas fa-exclamation-triangle"></i> Menunggu Pembayaran!</h5>
-    Akun koperasi Anda belum aktif sepenuhnya. Silakan selesaikan pembayaran untuk menghilangkan batasan.
-    <a href="{{ route('payment.show', $pendingTrans->order_id) }}" class="btn btn-light font-weight-bold ml-2 text-dark shadow-sm">
-        <i class="fas fa-credit-card mr-1"></i> Bayar Sekarang
-    </a>
-    <a href="{{ route('payment.check', $pendingTrans->order_id) }}" class="btn btn-outline-dark font-weight-bold ml-2 shadow-sm">
-        <i class="fas fa-sync mr-1"></i> Cek Status (Refresh)
-    </a>
-</div>
+    @if(isset($pendingTrans->payment_type) && str_contains($pendingTrans->payment_type, 'manual'))
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-clock"></i> Pembayaran Sedang Diverifikasi!</h5>
+            Anda telah melakukan pembayaran manual via transfer bank. Admin sedang memverifikasi bukti transfer Anda.
+            <br>Status: <strong>Menunggu Konfirmasi Admin</strong>.
+            <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-light btn-sm font-weight-bold ml-2 text-dark shadow-sm">
+                <i class="fab fa-whatsapp mr-1"></i> Hubungi Admin
+            </a>
+        </div>
+    @else
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Menunggu Pembayaran!</h5>
+            Akun koperasi Anda belum aktif sepenuhnya. Silakan selesaikan pembayaran untuk menghilangkan batasan.
+            <a href="{{ route('payment.show', $pendingTrans->order_id) }}" class="btn btn-light font-weight-bold ml-2 text-dark shadow-sm">
+                <i class="fas fa-credit-card mr-1"></i> Bayar Sekarang
+            </a>
+            <a href="{{ route('payment.check', $pendingTrans->order_id) }}" class="btn btn-outline-light font-weight-bold ml-2 shadow-sm">
+                <i class="fas fa-sync mr-1"></i> Cek Status (Refresh)
+            </a>
+        </div>
+    @endif
 @endif
 
 
