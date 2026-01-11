@@ -52,6 +52,14 @@
                                 <a href="{{ route('pinjaman.edit', $pinjaman->id) }}" class="btn btn-sm btn-info" title="Review">
                                     <i class="fas fa-check-circle"></i>
                                 </a>
+                                <form action="{{ route('pinjaman.update', $pinjaman->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menolak pinjaman ini?');">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="reject" value="1">
+                                    <button type="submit" class="btn btn-sm btn-warning" title="Tolak">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                </form>
                                     @elseif($pinjaman->status == 'approved')
                                 <button class="btn btn-sm btn-success disabled" title="Disetujui"><i class="fas fa-check"></i></button>
                                 @else
