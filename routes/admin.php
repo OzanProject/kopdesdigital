@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () { // Group 
         Route::delete('/subscription/transaction/{id}', [\App\Http\Controllers\SaaS\SubscriptionController::class, 'destroyTransaction'])->name('subscription.transaction.destroy');
 
         // Manual route preferred to avoid full resource clutter if not needed
+        Route::get('angsuran', [\App\Http\Controllers\SaaS\AngsuranController::class, 'index'])->name('angsuran.index');
         Route::get('angsuran/{angsuran}/pay', [\App\Http\Controllers\SaaS\AngsuranController::class, 'edit'])->name('angsuran.edit');
         Route::put('angsuran/{angsuran}', [\App\Http\Controllers\SaaS\AngsuranController::class, 'update'])->name('angsuran.update');
         // Support System

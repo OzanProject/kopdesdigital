@@ -1,113 +1,142 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ auth()->user()->hasRole('super_admin') ? (\App\Models\SaasSetting::where('key', 'app_name')->value('value') ?? 'SaaS Super Admin') : ($koperasi->nama ?? config('app.name')) }} | @yield('title')</title>
-  @php $saasLogo = \App\Models\SaasSetting::where('key', 'app_logo')->value('value'); @endphp
-  <link rel="icon" type="image/x-icon" href="{{ !auth()->user()->hasRole('super_admin') && isset($koperasi) && $koperasi->logo ? asset('storage/' . $koperasi->logo) : ($saasLogo ? asset('storage/' . $saasLogo) : asset('img/AdminLTELogo.png')) }}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- Tambahan penting untuk keamanan AJAX --}}
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('adminlte3/plugins/fontawesome-free/css/all.min.css') }}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{{ asset('adminlte3/dist/css/adminlte.min.css') }}">
-  <!-- Custom CSS -->
-  @stack('css')
+    <title>
+        {{ auth()->user()->hasRole('super_admin') 
+            ? (\App\Models\SaasSetting::where('key', 'app_name')->value('value') ?? 'SaaS Super Admin') 
+            : ($koperasi->nama ?? config('app.name')) 
+        }} | @yield('title')
+    </title>
+
+    @php 
+        $saasLogo = \App\Models\SaasSetting::where('key', 'app_logo')->value('value');
+        $faviconPath = !auth()->user()->hasRole('super_admin') && isset($koperasi) && $koperasi->logo 
+            ? asset('storage/' . $koperasi->logo) 
+            : ($saasLogo ? asset('storage/' . $saasLogo) : asset('adminlte3/dist/img/AdminLTELogo.png'));
+    @endphp
+    
+    <link rel="icon" type="image/x-icon" href="{{ $faviconPath }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('adminlte3/plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte3/dist/css/adminlte.min.css') }}">
+    
+    <style>
+        /* Modernisasi Global Dashboard */
+        body { font-family: 'Inter', 'Source Sans Pro', sans-serif; }
+        .content-wrapper { background-color: #f4f6f9; }
+        .main-sidebar { box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .content-header h1 { font-weight: 800; color: #1e293b; font-size: 1.8rem; }
+        .breadcrumb-item a { color: #0d6efd; font-weight: 500; }
+        
+        /* Utility Classes */
+        .rounded-lg { border-radius: 12px !important; }
+        .shadow-sm { box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important; }
+        .ls-1 { letter-spacing: 0.5px; }
+    </style>
+
+    @stack('css')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
-  @include('layouts.partials.navbar')
+    {{-- Navbar --}}
+    @include('layouts.partials.navbar')
 
-  @include('layouts.partials.sidebar')
+    {{-- Sidebar --}}
+    @include('layouts.partials.sidebar')
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>@yield('title')</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">@yield('title')</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+    <div class="content-wrapper">
+        <section class="content-header py-4">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">@yield('title')</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right bg-transparent p-0">
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                            <li class="breadcrumb-item active">@yield('title')</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        {{-- Flash Messages handled by SweetAlert --}}
-        
-        @yield('content')
-      </div>
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+        <section class="content">
+            <div class="container-fluid">
+                {{-- Di sini konten dari setiap halaman akan muncul --}}
+                @yield('content')
+            </div>
+        </section>
+    </div>
 
-  @include('layouts.partials.footer')
+    {{-- Footer --}}
+    @include('layouts.partials.footer')
 
 </div>
-<!-- ./wrapper -->
-
-<!-- jQuery -->
 <script src="{{ asset('adminlte3/plugins/jquery/jquery.min.js') }}"></script>
-<!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte3/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<!-- AdminLTE App -->
 <script src="{{ asset('adminlte3/dist/js/adminlte.min.js') }}"></script>
-@stack('js')
 
-<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    // Flash Messages to SweetAlert
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: {!! json_encode(session('success')) !!},
-            timer: 3000,
-            showConfirmButton: false
+    $(document).ready(function() {
+        // CSRF Token Setup untuk AJAX (Mencegah error 419)
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
-    @endif
 
-    @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: {!! json_encode(session('error')) !!},
-        });
-    @endif
+        // Flash Message Logic (Variabel PHP ke JS yang Aman)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        @endif
 
-    // Global Delete Confirmation
-    $(document).on('click', '.btn-delete', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#0d6efd'
+            });
+        @endif
+
+        // Global Delete Confirmation (Hanya untuk class .btn-delete)
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: "Apakah Anda yakin ingin menghapus data ini secara permanen?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-trash"></i> Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
 </script>
+
+@stack('js')
 </body>
 </html>

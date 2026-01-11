@@ -1,132 +1,207 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Profil')
+@section('title', 'Pengaturan Profil Anggota')
 
 @section('content')
-<div class="row">
-    <div class="col-md-3">
-        <!-- Profile Image -->
-        <div class="card card-primary card-outline">
-            <div class="card-body box-profile">
-                <div class="text-center">
-                    <img class="profile-user-img img-fluid img-circle"
-                        src="{{ $nasabah->foto ? asset('storage/' . $nasabah->foto) : asset('img/default-user.png') }}"
-                        alt="User profile picture">
-                </div>
+<style>
+    .profile-card-modern {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        padding: 5px;
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .profile-user-img-main {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 3px solid #f8fafc;
+    }
+    .status-badge-profile {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        background: #22c55e;
+        border: 4px solid #fff;
+        border-radius: 50%;
+    }
+    .form-section-title {
+        font-weight: 800;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #64748b;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .form-section-title::after {
+        content: "";
+        flex-grow: 1;
+        height: 1px;
+        background: #e2e8f0;
+        margin-left: 15px;
+    }
+</style>
 
-                <h3 class="profile-username text-center">{{ $user->name }}</h3>
-                <p class="text-muted text-center">{{ $nasabah->no_anggota }}</p>
-
-                <ul class="list-group list-group-unbordered mb-3">
-                    <li class="list-group-item">
-                        <b>Status</b> <a class="float-right badge badge-success">{{ ucfirst($nasabah->status) }}</a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Bergabung</b> <a class="float-right">{{ $nasabah->tanggal_bergabung->format('d M Y') }}</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- /.col -->
-    <div class="col-md-9">
-        <div class="card">
-            <div class="card-header p-2">
-                <ul class="nav nav-pills">
-                    <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Pengaturan Profil</a></li>
-                </ul>
-            </div>
-            <div class="card-body">
-                <div class="tab-content">
-                    <div class="active tab-pane" id="settings">
-                        <form class="form-horizontal" method="POST" action="{{ route('member.profile.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            
-                            <div class="form-group row">
-                                <label for="nama" class="col-sm-2 col-form-label">Nama Lengkap</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama', $nasabah->nama) }}" placeholder="Nama">
-                                    @error('nama') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email" class="col-sm-2 col-form-label">Email</label>
-                                <div class="col-sm-10">
-                                    <input type="email" class="form-control" id="email" value="{{ $user->email }}" disabled>
-                                    <small class="text-muted">Email tidak dapat diubah (hubungi admin).</small>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="telepon" class="col-sm-2 col-form-label">No. Telepon</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="telepon" name="telepon" value="{{ old('telepon', $nasabah->telepon) }}" placeholder="Telepon">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="pekerjaan" class="col-sm-2 col-form-label">Pekerjaan</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="pekerjaan" name="pekerjaan" value="{{ old('pekerjaan', $nasabah->pekerjaan) }}" placeholder="Pekerjaan">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
-                                <div class="col-sm-10">
-                                    <textarea class="form-control" id="alamat" name="alamat" placeholder="Alamat">{{ old('alamat', $nasabah->alamat) }}</textarea>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="foto" class="col-sm-2 col-form-label">Foto Profil</label>
-                                <div class="col-sm-10">
-                                    <div class="input-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="foto" name="foto">
-                                            <label class="custom-file-label" for="foto">Pilih file (jika ingin ganti)</label>
-                                        </div>
-                                    </div>
-                                    <small class="text-muted">Format: JPG, PNG. Maks: 2MB.</small>
-                                </div>
-                            </div>
-
-                            <hr>
-                            <h5 class="text-primary mb-3"><i class="fas fa-lock mr-1"></i> Keamanan (Ganti Password)</h5>
-                            
-                            <div class="form-group row">
-                                <label for="password" class="col-sm-2 col-form-label">Password Baru</label>
-                                <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengganti">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="password_confirmation" class="col-sm-2 col-form-label">Konfirmasi</label>
-                                <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="offset-sm-2 col-sm-10">
-                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                                </div>
-                            </div>
-                        </form>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-xl-3 mb-4">
+            <div class="card profile-card-modern shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="avatar-wrapper mb-3">
+                        <img class="profile-user-img-main img-fluid img-circle"
+                             src="{{ $nasabah->foto ? asset('storage/' . $nasabah->foto) : asset('adminlte3/dist/img/user2-160x160.jpg') }}"
+                             id="avatarPreview" alt="User profile picture">
+                        <div class="status-badge-profile" title="Akun Aktif"></div>
                     </div>
-                    <!-- /.tab-pane -->
+
+                    <h5 class="font-weight-bold text-dark mb-1">{{ $user->name }}</h5>
+                    <p class="text-muted small mb-4">{{ $nasabah->no_anggota }}</p>
+
+                    <div class="text-left mt-4 pt-4 border-top">
+                        <div class="mb-3">
+                            <label class="small text-muted d-block mb-0">Status Keanggotaan</label>
+                            <span class="badge badge-success px-3 py-2 rounded-pill shadow-xs">{{ strtoupper($nasabah->status) }}</span>
+                        </div>
+                        <div class="mb-0">
+                            <label class="small text-muted d-block mb-0">Tanggal Bergabung</label>
+                            <span class="font-weight-bold text-dark">{{ $nasabah->tanggal_bergabung->translatedFormat('d F Y') }}</span>
+                        </div>
+                    </div>
                 </div>
-                <!-- /.tab-content -->
-            </div><!-- /.card-body -->
+                <div class="card-footer bg-light border-0 py-3 text-center">
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4 font-weight-bold" onclick="document.getElementById('fotoInput').click();">
+                        <i class="fas fa-camera mr-1"></i> Ganti Foto Profil
+                    </button>
+                </div>
+            </div>
         </div>
-        <!-- /.card -->
+
+        <div class="col-lg-8 col-xl-9">
+            <div class="card profile-card-modern shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="font-weight-bold mb-0">Informasi Pribadi</h5>
+                    <p class="text-muted small">Kelola data diri dan keamanan akun Anda</p>
+                </div>
+
+                <form action="{{ route('member.profile.update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    
+                    {{-- Input File Tersembunyi --}}
+                    <input type="file" name="foto" id="fotoInput" style="display: none;" accept="image/*">
+
+                    <div class="card-body px-4">
+                        <div class="form-section-title">Data Identitas</div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="small font-weight-bold">Nama Lengkap</label>
+                                    <input type="text" name="nama" class="form-control form-control-lg fs-6 @error('nama') is-invalid @enderror" 
+                                           value="{{ old('nama', $nasabah->nama) }}" placeholder="Masukkan nama sesuai KTP">
+                                    @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="small font-weight-bold">Alamat Email</label>
+                                    <input type="email" class="form-control form-control-lg fs-6 bg-light" value="{{ $user->email }}" disabled>
+                                    <small class="text-muted italic"><i class="fas fa-info-circle mr-1"></i> Hubungi Admin untuk mengubah email.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="small font-weight-bold">Nomor Telepon / WA</label>
+                                    <input type="text" name="telepon" class="form-control form-control-lg fs-6" 
+                                           value="{{ old('telepon', $nasabah->telepon) }}" placeholder="Contoh: 0812xxxx">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label class="small font-weight-bold">Pekerjaan</label>
+                                    <input type="text" name="pekerjaan" class="form-control form-control-lg fs-6" 
+                                           value="{{ old('pekerjaan', $nasabah->pekerjaan) }}" placeholder="Karyawan Swasta, PNS, dll.">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="small font-weight-bold">Alamat Domisili</label>
+                            <textarea name="alamat" class="form-control fs-6" rows="2" placeholder="Alamat lengkap tempat tinggal saat ini">{{ old('alamat', $nasabah->alamat) }}</textarea>
+                        </div>
+
+                        <div class="form-section-title mt-5">Keamanan Akun</div>
+                        
+                        <div class="p-4 rounded-lg bg-light border border-dashed mb-4">
+                            <p class="text-muted small mb-3"><i class="fas fa-shield-alt mr-1"></i> Biarkan kolom di bawah ini kosong jika Anda tidak ingin mengganti password.</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small font-weight-bold">Password Baru</label>
+                                        <input type="password" name="password" class="form-control bg-white" placeholder="Minimal 8 karakter">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small font-weight-bold">Konfirmasi Password Baru</label>
+                                        <input type="password" name="password_confirmation" class="form-control bg-white" placeholder="Ulangi password baru">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 py-4 px-4 d-flex justify-content-between">
+                        <a href="{{ route('dashboard') }}" class="btn btn-light px-4 rounded-pill font-weight-bold text-muted">Batal</a>
+                        <button type="submit" class="btn btn-primary px-5 rounded-pill font-weight-bold shadow">
+                            <i class="fas fa-save mr-2"></i> Simpan Perubahan Profil
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <!-- /.col -->
 </div>
 @endsection
 
 @push('js')
 <script>
-    $('.custom-file-input').on('change', function() {
-        var fileName = $(this).val().split('\\').pop();
-        $(this).siblings('.custom-file-label').addClass("selected").html(fileName);
+    $(document).ready(function() {
+        // Preview Foto Profil saat dipilih
+        $('#fotoInput').on('change', function() {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#avatarPreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+                
+                // Beri notifikasi toast/small text
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Foto Terpilih',
+                    text: 'Jangan lupa klik tombol "Simpan Perubahan" untuk menerapkan foto baru.',
+                    timer: 3000,
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false
+                });
+            }
+        });
     });
 </script>
 @endpush

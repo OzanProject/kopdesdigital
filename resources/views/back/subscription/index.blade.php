@@ -1,130 +1,183 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Langganan & Paket')
+@section('title', 'Manajemen Paket & Langganan')
 
 @section('content')
+<style>
+    /* Styling Pricing Cards */
+    .pricing-card {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    .pricing-card.active-plan {
+        border: 2px solid #28a745;
+    }
+    .package-name {
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #64748b;
+    }
+    .price-tag {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+    .feature-list {
+        padding: 0;
+        list-style: none;
+    }
+    .feature-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+        color: #475569;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    
+    /* Promo Box */
+    .promo-badge-card {
+        background: linear-gradient(45deg, #ffffff, #f0fdf4);
+        border: 1px dashed #22c55e;
+        border-radius: 12px;
+    }
+    .copy-code {
+        background: #f1f5f9;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        transition: 0.2s;
+    }
+    .copy-code:hover { background: #e2e8f0; }
 
-<!-- Current Subscription Status -->
-<div class="row">
+    /* Subscription Status Banner */
+    .sub-status-card {
+        background: #1e293b;
+        color: white;
+        border-radius: 16px;
+        border: none;
+    }
+</style>
+
+<div class="row mb-4">
     <div class="col-12">
-        <div class="card bg-light shadow-sm border-left-primary">
-            <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-                <div>
-                    <h5 class="font-weight-bold text-primary mb-1">Paket Saat Ini: {{ $currentPackage->name ?? 'Free Tier' }}</h5>
-                    <div class="text-muted">
-                        Status: 
-                        @if($koperasi->status == 'active')
-                            <span class="badge badge-success px-2">Aktif</span>
-                        @elseif($koperasi->status == 'pending_payment')
-                            <span class="badge badge-warning px-2">Menunggu Pembayaran</span>
-                        @else
-                            <span class="badge badge-danger px-2">{{ ucfirst($koperasi->status) }}</span>
-                        @endif
-                        <span class="mx-2">|</span>
-                        Berakhir pada: <strong>{{ $koperasi->subscription_end_date ? $koperasi->subscription_end_date->translatedFormat('d F Y') : '-' }}</strong>
-                        @if($koperasi->subscription_end_date && $koperasi->subscription_end_date->isFuture())
-                            <small class="text-danger ml-1">({{ $koperasi->subscription_end_date->diffInDays(now()) }} hari lagi)</small>
-                        @endif
+        <div class="card sub-status-card shadow-sm">
+            <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary p-3 rounded-circle mr-3 shadow-sm">
+                        <i class="fas fa-crown fa-2x text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-weight-bold mb-1">Paket Aktif: <span class="text-primary">{{ $currentPackage->name ?? 'Free Tier' }}</span></h5>
+                        <p class="mb-0 small opacity-75">
+                            Status: 
+                            @if($koperasi->status == 'active')
+                                <span class="badge badge-success px-3 rounded-pill">AKTIF</span>
+                            @elseif($koperasi->status == 'pending_payment')
+                                <span class="badge badge-warning px-3 rounded-pill text-dark">MENUNGGU PEMBAYARAN</span>
+                            @else
+                                <span class="badge badge-danger px-3 rounded-pill">{{ strtoupper($koperasi->status) }}</span>
+                            @endif
+                            <span class="mx-2">|</span>
+                            Masa Berlaku: <b>{{ $koperasi->subscription_end_date ? $koperasi->subscription_end_date->translatedFormat('d M Y') : 'Selamanya' }}</b>
+                            @if($koperasi->subscription_end_date && $koperasi->subscription_end_date->isFuture())
+                                <span class="text-warning ml-1">({{ $koperasi->subscription_end_date->diffInDays(now()) }} Hari Lagi)</span>
+                            @endif
+                        </p>
                     </div>
                 </div>
                 <div class="mt-3 mt-md-0">
-                    <a href="#upgrade-section" class="btn btn-primary btn-sm scroll-to"><i class="fas fa-arrow-circle-up mr-1"></i> Upgrade Paket</a>
+                    <a href="#upgrade-section" class="btn btn-primary btn-lg rounded-pill font-weight-bold shadow-sm scroll-to">
+                        <i class="fas fa-rocket mr-2"></i> Upgrade Layanan
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Promo Banner -->
 @if($availableDiscounts->count() > 0)
-<div class="alert alert-success alert-dismissible">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <h5><i class="icon fas fa-tag"></i> Promo Spesial Tersedia!</h5>
-    <div class="row mt-2">
-        @foreach($availableDiscounts as $promo)
-        <div class="col-md-3 col-sm-6 mb-2">
-            <div class="info-box shadow-none bg-light border mb-0" style="min-height: 80px;">
-                <span class="info-box-icon"><i class="fas fa-percentage text-success"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Kode: <strong class="text-primary copy-code" style="cursor:pointer" title="Klik untuk salin">{{ $promo->code }}</strong></span>
-                    <span class="info-box-number" style="font-size: 14px;">
-                        @if($promo->type == 'percent') Diskon {{ $promo->amount }}% @else Potongan Rp {{ number_format($promo->amount/1000, 0) }}rb @endif
-                    </span>
+<div class="card border-0 shadow-sm mb-4 promo-badge-card animate__animated animate__headShake">
+    <div class="card-body p-3">
+        <h6 class="font-weight-bold text-success mb-3"><i class="fas fa-bolt mr-2"></i> Penawaran Terbatas Untuk Anda:</h6>
+        <div class="row">
+            @foreach($availableDiscounts as $promo)
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+                <div class="d-flex align-items-center p-2 bg-white rounded border shadow-xs">
+                    <div class="text-success mr-3 ml-2"><i class="fas fa-ticket-alt fa-lg"></i></div>
+                    <div>
+                        <div class="small text-muted mb-0">Klik Kode Promo:</div>
+                        <strong class="text-primary copy-code" style="cursor:pointer" title="Klik untuk pakai">{{ $promo->code }}</strong>
+                        <div class="small font-weight-bold text-success">
+                            @if($promo->type == 'percent') Diskon {{ $promo->amount }}% @else Hemat Rp{{ number_format($promo->amount/1000, 0) }}rb @endif
+                        </div>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
 </div>
 @endif
 
-<!-- Pricing Packages -->
-<h4 class="mb-3 mt-4 font-weight-bold text-dark" id="upgrade-section">Pilihan Paket Langganan</h4>
-<div class="row d-flex align-items-stretch">
-    @foreach($packages as $package)
-    <div class="col-md-4 d-flex align-items-stretch">
-        <div class="card w-100 card-outline {{ $currentPackage->id == $package->id ? 'card-success border-success' : 'card-primary' }} mb-4 shadow-sm transition-hover">
-            @if($currentPackage->id == $package->id)
-                <div class="ribbon-wrapper ribbon-lg">
-                    <div class="ribbon bg-success">PAKET ANDA</div>
-                </div>
-            @endif
-            <div class="card-header text-center bg-white border-bottom-0 pt-4 pb-0">
-                <h5 class="text-uppercase text-muted letter-spacing-1 mb-0">{{ $package->name }}</h5>
-            </div>
-            <div class="card-body text-center pt-2">
-                <h1 class="display-4 font-weight-bold pricing-card-title">
-                    <small style="font-size: 20px">Rp</small>{{ number_format($package->price, 0, ',', '.') }}
-                    <small class="text-muted" style="font-size: 16px">
-                        @if($package->duration_days >= 360)
-                            / tahun
-                        @elseif($package->duration_days >= 30)
-                            / bulan
-                        @else
-                            / {{ $package->duration_days }} hari
-                        @endif
-                    </small>
-                </h1>
-                <ul class="list-unstyled mt-3 mb-4 text-left mx-4">
-                    <li class="mb-2"><i class="fas fa-check text-success mr-2"></i> {{ $package->max_members > 0 ? number_format($package->max_members) . ' Anggota' : 'Unlimited Anggota' }}</li>
-                    <li class="mb-2"><i class="fas fa-check text-success mr-2"></i> {{ $package->max_users > 0 ? $package->max_users . ' Admin User' : 'Unlimited Admin' }}</li>
-                    <li class="mb-2"><i class="fas fa-check text-success mr-2"></i> {{ $package->description ?? 'Full Support' }}</li>
-                    <li><i class="fas fa-hdd text-secondary mr-2"></i> Auto Backup Data</li>
-                </ul>
-                
-                <hr>
+<div class="text-center mb-4 mt-5" id="upgrade-section">
+    <h3 class="font-weight-bold">Pilih Paket Masa Depan Koperasi</h3>
+    <p class="text-muted">Investasi cerdas untuk digitalisasi operasional yang lebih transparan.</p>
+</div>
 
-                <!-- Upgrade/Renew Form -->
-                <form action="{{ route('subscription.upgrade') }}" method="POST" class="subscription-form">
+<div class="row g-4 mb-5">
+    @foreach($packages as $package)
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 pricing-card shadow-sm {{ $currentPackage->id == $package->id ? 'active-plan shadow' : '' }}">
+            @if($currentPackage->id == $package->id)
+                <div class="bg-success text-white text-center py-1 font-weight-bold small">PAKET ANDA SAAT INI</div>
+            @endif
+            
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h6 class="package-name text-uppercase">{{ $package->name }}</h6>
+                    <div class="price-tag">
+                        <span style="font-size: 1.2rem; vertical-align: top; margin-top: 10px; display: inline-block;">Rp</span>{{ number_format($package->price, 0, ',', '.') }}
+                    </div>
+                    <p class="text-muted small">
+                        @if($package->duration_days >= 360) / Tahun @elseif($package->duration_days >= 30) / Bulan @else / {{ $package->duration_days }} Hari @endif
+                    </p>
+                </div>
+
+                <ul class="feature-list mb-4">
+                    <li><i class="fas fa-check-circle text-success mr-2"></i> <strong>{{ $package->max_members > 0 ? number_format($package->max_members) : 'Unlimited' }}</strong> Kapasitas Anggota</li>
+                    <li><i class="fas fa-check-circle text-success mr-2"></i> <strong>{{ $package->max_users > 0 ? $package->max_users : 'Unlimited' }}</strong> User Administrator</li>
+                    <li><i class="fas fa-check-circle text-success mr-2"></i> {{ $package->description ?? 'Fitur Lengkap & Support' }}</li>
+                    <li><i class="fas fa-shield-alt text-primary mr-2"></i> Cloud Auto Backup & Security</li>
+                </ul>
+
+                <form action="{{ route('subscription.upgrade') }}" method="POST" class="subscription-form mt-auto">
                     @csrf
                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                     
-                    @if($currentPackage->id != $package->id)
-                        <div class="form-group px-3">
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="discount_code" class="form-control" placeholder="Kode Promo (Opsional)">
-                                <span class="input-group-append">
-                                <button type="button" class="btn btn-info btn-flat btn-check-coupon">Cek</button>
-                                </span>
+                    <div class="form-group mb-3">
+                        <div class="input-group input-group-sm shadow-xs">
+                            <input type="text" name="discount_code" class="form-control border-right-0" placeholder="Kode Promo">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-info btn-check-coupon px-3">Cek</button>
                             </div>
-                            <small class="coupon-msg d-block text-left mt-1"></small>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-sm">
-                            <i class="fas fa-shopping-cart mr-2"></i> Pilih Paket Ini
+                        <div class="coupon-msg mt-1 small" style="min-height: 15px;"></div>
+                    </div>
+
+                    @if($currentPackage->id != $package->id)
+                        <button type="submit" class="btn btn-primary btn-block btn-lg rounded-pill font-weight-bold shadow-sm">
+                            Pilih Paket Ini
                         </button>
                     @else
-                        <!-- Form for renewal explicitly if needed, or just status -->
-                         <div class="form-group px-3">
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="discount_code" class="form-control" placeholder="Kode Promo (Perpanjang)">
-                                <span class="input-group-append">
-                                <button type="button" class="btn btn-info btn-flat btn-check-coupon">Cek</button>
-                                </span>
-                            </div>
-                            <small class="coupon-msg d-block text-left mt-1"></small>
-                        </div>
-                        <button type="submit" class="btn btn-outline-success btn-block btn-lg">
-                            <i class="fas fa-sync-alt mr-2"></i> Perpanjang Paket
+                        <button type="submit" class="btn btn-outline-success btn-block btn-lg rounded-pill font-weight-bold">
+                            <i class="fas fa-sync-alt mr-1"></i> Perpanjang Paket
                         </button>
                     @endif
                 </form>
@@ -134,65 +187,71 @@
     @endforeach
 </div>
 
-<!-- Transaction History -->
-<div class="row mt-4">
+<div class="row">
     <div class="col-12">
-        <div class="card card-outline card-secondary">
-            <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-history mr-2"></i> Riwayat Transaksi Terakhir</h3>
+        <div class="card border-0 shadow-sm rounded-lg">
+            <div class="card-header bg-white py-3">
+                <h6 class="mb-0 font-weight-bold text-dark"><i class="fas fa-history mr-2 text-muted"></i> Histori Transaksi Langganan</h6>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0">
-                        <thead class="thead-light">
+                    <table class="table table-hover m-0">
+                        <thead class="bg-light">
                             <tr>
-                                <th>No. Invoice</th>
-                                <th>Paket</th>
-                                <th>Jumlah</th>
-                                <th>Metode Bayar</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                                <th>Aksi</th>
+                                <th class="border-0 px-4">Invoice</th>
+                                <th class="border-0">Paket Layanan</th>
+                                <th class="border-0">Nominal Tagihan</th>
+                                <th class="border-0 text-center">Metode Bayar</th>
+                                <th class="border-0 text-center">Status</th>
+                                <th class="border-0 text-right px-4">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transactions as $trx)
                             <tr>
-                                <td><code>#{{ $trx->order_id }}</code></td>
-                                <td>{{ $trx->package->name ?? '-' }}</td>
-                                <td>Rp {{ number_format($trx->amount, 0, ',', '.') }}</td>
-                                <td>
-                                    {{ $trx->payment_type ? strtoupper(str_replace('_', ' ', $trx->payment_type)) : '-' }}
+                                <td class="align-middle px-4">
+                                    <span class="font-weight-bold text-primary">#{{ $trx->order_id }}</span><br>
+                                    <small class="text-muted">{{ $trx->created_at->translatedFormat('d M Y, H:i') }}</small>
                                 </td>
-                                <td>
-                                    @if($trx->status == 'paid')
-                                        <span class="badge badge-success">Lunas</span>
-                                    @elseif($trx->status == 'pending')
-                                        <span class="badge badge-warning">Pending</span>
-                                    @elseif($trx->status == 'failed' || $trx->status == 'cancelled')
-                                        <span class="badge badge-danger">Gagal/Batal</span>
-                                    @else
-                                        <span class="badge badge-secondary">{{ $trx->status }}</span>
-                                    @endif
+                                <td class="align-middle font-weight-bold">{{ $trx->package->name ?? 'Custom Plan' }}</td>
+                                <td class="align-middle font-weight-bold">Rp {{ number_format($trx->amount, 0, ',', '.') }}</td>
+                                <td class="align-middle text-center small text-uppercase font-weight-bold text-muted">
+                                    {{ $trx->payment_type ? str_replace('_', ' ', $trx->payment_type) : 'N/A' }}
                                 </td>
-                                <td>{{ $trx->created_at->translatedFormat('d M Y H:i') }}</td>
-                                <td>
+                                <td class="align-middle text-center">
+                                    @php
+                                        $badge = match($trx->status) {
+                                            'paid' => 'badge-success',
+                                            'pending' => 'badge-warning',
+                                            'failed', 'cancelled' => 'badge-danger',
+                                            default => 'badge-secondary'
+                                        };
+                                        $label = match($trx->status) {
+                                            'paid' => 'LUNAS',
+                                            'pending' => 'MENUNGGU',
+                                            'failed' => 'GAGAL',
+                                            'cancelled' => 'DIBATALKAN',
+                                            default => strtoupper($trx->status)
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $badge }} px-3 py-2 rounded-pill shadow-xs">{{ $label }}</span>
+                                </td>
+                                <td class="align-middle text-right px-4">
                                     @if($trx->status == 'pending')
-                                        <a href="{{ route('payment.show', $trx->order_id) }}" class="btn btn-xs btn-primary">Bayar</a>
-                                        <form action="{{ route('subscription.transaction.destroy', $trx->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan/menghapus transaksi ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
-                                        </form>
+                                        <div class="btn-group">
+                                            <a href="{{ route('payment.show', $trx->order_id) }}" class="btn btn-sm btn-primary px-3 shadow-sm">Bayar</a>
+                                            <form action="{{ route('subscription.transaction.destroy', $trx->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Batalkan pengajuan ini?');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-white text-danger border ml-1"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
                                     @else
-                                        <button class="btn btn-xs btn-secondary" disabled>Selesai</button>
+                                        <button class="btn btn-sm btn-light border disabled px-3">Selesai</button>
                                     @endif
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">Belum ada riwayat transaksi.</td>
-                            </tr>
+                            <tr><td colspan="6" class="text-center py-5 text-muted opacity-50">Belum ada riwayat transaksi.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -201,86 +260,4 @@
         </div>
     </div>
 </div>
-
 @endsection
-
-@push('js')
-<script>
-$(document).ready(function() {
-    // Copy Code Logic
-    $('.copy-code').click(function() {
-        var code = $(this).text();
-        // Insert to all inputs
-        $('input[name="discount_code"]').val(code);
-        
-        // Visual Feedback
-        var originalText = $(this).text();
-        $(this).text("Copied!");
-        setTimeout(() => {
-            $(this).text(originalText);
-        }, 1000);
-        
-        toastr.success('Kode promo ' + code + ' disalin ke formulir!');
-    });
-
-    // Check Coupon Logic (AJAX)
-    $('.btn-check-coupon').click(function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-        var code = form.find('input[name="discount_code"]').val();
-        var packageId = form.find('input[name="package_id"]').val();
-        var msgContainer = form.find('.coupon-msg');
-
-        if(!code) {
-            toastr.error('Masukkan kode promo terlebih dahulu.');
-            return;
-        }
-
-        $.ajax({
-            url: "{{ route('subscription.check-coupon') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                code: code,
-                package_id: packageId
-            },
-            beforeSend: function() {
-                $(this).prop('disabled', true).text('Checking...');
-            },
-            success: function(response) {
-                if(response.valid) {
-                    msgContainer.html('<span class="text-success"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
-                    toastr.success(response.message);
-                } else {
-                    msgContainer.html('<span class="text-danger"><i class="fas fa-times-circle"></i> ' + response.message + '</span>');
-                }
-            },
-            error: function(xhr) {
-                msgContainer.html('<span class="text-danger">Gagal mengecek kupon.</span>');
-            },
-            complete: function() {
-                $('.btn-check-coupon').prop('disabled', false).text('Cek');
-            }
-        });
-    });
-
-    // Smooth Scroll
-    $(".scroll-to").on('click', function(event) {
-        if (this.hash !== "") {
-            event.preventDefault();
-            var hash = this.hash;
-            $('html, body').animate({
-                scrollTop: $(hash).offset().top - 80
-            }, 800);
-        }
-    });
-
-    // Form Confirmation
-    $('.subscription-form').submit(function(e) {
-        if(!confirm('Apakah Anda yakin ingin memilih paket ini/melakukan perpanjangan?')) {
-            e.preventDefault();
-        }
-    });
-});
-</script>
-@endpush

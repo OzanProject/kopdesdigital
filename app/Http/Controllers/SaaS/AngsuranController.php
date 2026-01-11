@@ -8,6 +8,31 @@ use Illuminate\Http\Request;
 
 class AngsuranController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Angsuran::with(['pinjaman.nasabah'])
+            ->latest('jatuh_tempo');
+
+        if ($request->filled('status')) {
+            if ($request->status == 'paid') {
+                $query->where('status', 'paid');
+            } elseif ($request->status == 'unpaid') {
+                $query->where('status', '!=', 'paid');
+            }
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('pinjaman.nasabah', function($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%");
+            });
+        }
+
+        $angsurans = $query->paginate(20)->withQueryString();
+
+        return view('back.angsuran.index', compact('angsurans'));
+    }
+
     // Hanya perlu edit (Form Bayar) dan Update (Proses Bayar)
     
     public function edit(Angsuran $angsuran)

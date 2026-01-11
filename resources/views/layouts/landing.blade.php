@@ -4,55 +4,118 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Dynamic SEO Meta Tags -->
-    <title>@hasSection('title') @yield('title') - @endif {{ $settings['app_name'] ?? config('app.name') }}</title>
+    <title>@hasSection('title') @yield('title') — @endif {{ $settings['app_name'] ?? config('app.name') }}</title>
     <meta name="description" content="{{ $settings['seo_meta_description'] ?? '' }}">
     <meta name="keywords" content="{{ $settings['seo_meta_keywords'] ?? '' }}">
     
-    <!-- OG Meta Tags -->
-    @if(isset($settings['seo_og_image']))
-    <meta property="og:image" content="{{ asset('storage/'.$settings['seo_og_image']) }}">
-    @endif
-
-    <!-- Favicon -->
     @php $saasLogo = $settings['app_logo'] ?? null; @endphp
-    <link rel="icon" type="image/x-icon" href="{{ $saasLogo ? asset('storage/' . $saasLogo) : asset('img/AdminLTELogo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ $saasLogo ? asset('storage/' . $saasLogo) : asset('img/favicon.png') }}">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
-        .hero-section { padding: 100px 0; background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%); color: white; }
-        .section-padding { padding: 80px 0; }
-        .card-feature { border: none; border-radius: 15px; transition: transform 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .card-feature:hover { transform: translateY(-5px); }
-        .icon-box { width: 60px; height: 60px; background: #e7f1ff; color: #0d6efd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
-        .pricing-card { border: none; border-radius: 20px; transition: 0.3s; }
-        .pricing-card:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .testimonial-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; }
-        .accordion-button:not(.collapsed) { background-color: #e7f1ff; color: #0d6efd; }
+        :root {
+            --primary-color: #0061ff;
+            --secondary-color: #60a5fa;
+            --dark-blue: #0f172a;
+            --light-bg: #f8fafc;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--light-bg); 
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section Modern */
+        .hero-section { 
+            padding: 140px 0 100px; 
+            background: radial-gradient(circle at top right, #e0eaff 0%, #ffffff 50%);
+            position: relative;
+        }
+
+        /* Utility Classes for Professional Look */
+        .section-padding { padding: 100px 0; }
+        
+        .card-feature { 
+            border: 1px solid rgba(0,0,0,0.05); 
+            border-radius: 24px; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: white;
+            padding: 2rem;
+        }
+        
+        .card-feature:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+        }
+
+        .icon-box { 
+            width: 64px; 
+            height: 64px; 
+            background: rgba(0, 97, 255, 0.1); 
+            color: var(--primary-color); 
+            border-radius: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 26px; 
+            margin-bottom: 24px; 
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0052d4;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 97, 255, 0.3);
+        }
+
+        /* Navbar Customization */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
     </style>
 
-    <!-- Header Scripts (Analytics etc) -->
     {!! $settings['seo_head_scripts'] ?? '' !!}
 </head>
 <body>
 
     @include('layouts.partials.landing_navbar')
 
-    @yield('content')
+    <main>
+        @yield('content')
+    </main>
 
     @include('layouts.partials.landing_footer')
 
-    <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
 </body>
 </html>
