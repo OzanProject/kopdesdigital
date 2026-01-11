@@ -14,6 +14,12 @@ class BackupController extends Controller
     {
         $disk = Storage::disk('local');
         $backupName = config('backup.backup.name');
+        
+        // Ensure directory exists
+        if (!$disk->exists($backupName)) {
+            $disk->makeDirectory($backupName);
+        }
+
         $files = $disk->files($backupName);
         $backups = [];
 
@@ -32,6 +38,9 @@ class BackupController extends Controller
 
         // Sort by newest
         $backups = array_reverse(array_values(collect($backups)->sortBy('created_at')->toArray()));
+        
+        // Debug info (optional, remove later)
+        // dump($disk->path($backupName));
 
         return view('admin.backups.index', compact('backups'));
     }
@@ -41,35 +50,22 @@ class BackupController extends Controller
         try {
             set_time_limit(300); // 5 minutes
 
-            // HYBRID BACKUP STRATEGY
-            // Windows (Local): Use exec() to bypass "Winsock Error 10106" / Environment restrictions.
-            // Linux (Hosting): Use standard Artisan::call(). safer and works even if exec() is disabled.
-
-            if (PHP_OS_FAMILY === 'Windows') {
-                $phpBinary = PHP_BINARY;
-                $artisanPath = base_path('artisan');
-                $command = "\"$phpBinary\" \"$artisanPath\" backup:run --only-db --disable-notifications 2>&1";
-                
-                $output = [];
-                $returnVar = 0;
-                exec($command, $output, $returnVar);
-                
-                $outputString = implode("\n", $output);
-                \Illuminate\Support\Facades\Log::info("Backup Shell Output: " . $outputString);
-
-                if ($returnVar !== 0) {
-                     throw new \Exception("Backup failed with exit code $returnVar. Output: $outputString");
-                }
-            } else {
-                // Standard for Linux / Hosting
-                // Much cleaner and usually works out-of-the-box on cPanel/VPS
-                Artisan::call('backup:run --only-db --disable-notifications');
-                
-                $output = Artisan::output();
-                \Illuminate\Support\Facades\Log::info("Backup Output: " . $output);
+            // Ensure destination folder exists
+            $disk = Storage::disk('local');
+            $backupName = config('backup.backup.name');
+             if (!$disk->exists($backupName)) {
+                $disk->makeDirectory($backupName);
             }
 
-            return redirect()->back()->with('success', 'Backup Database berhasil dibuat.');
+            Artisan::call('backup:run --only-db --disable-notifications');
+            $output = Artisan::output();
+
+            // Check if output contains "Failed"
+            if (strpos($output, 'Backup failed') !== false) {
+                 throw new \Exception("Backup command reported failure: " . $output);
+            }
+
+            return redirect()->back()->with('success', 'Backup Database berhasil dibuat. Output: ' . substr($output, 0, 100));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Backup Failed: " . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal membuat backup: ' . $e->getMessage());
