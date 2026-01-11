@@ -156,7 +156,7 @@
                             <tbody>
                                 @forelse($recentAngsuran as $item)
                                 <tr>
-                                    <td>{{ $item->tanggal_bayar->format('d/m/Y') }}</td>
+                                    <td>{{ $item->tanggal_bayar ? $item->tanggal_bayar->format('d/m/Y') : '-' }}</td>
                                     <td>{{ $item->pinjaman->kode_pinjaman ?? '-' }}</td>
                                     <td class="text-danger">- Rp {{ number_format($item->jumlah_bayar, 0, ',', '.') }}</td>
                                 </tr>

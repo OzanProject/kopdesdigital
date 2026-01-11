@@ -39,7 +39,11 @@ class DashboardController extends Controller
         $recentSimpanan = $nasabah->simpanans()->latest('tanggal_transaksi')->take(5)->get();
         $recentAngsuran = \App\Models\Angsuran::whereHas('pinjaman', function($q) use ($nasabah) {
             $q->where('nasabah_id', $nasabah->id);
-        })->with('pinjaman')->latest('tanggal_bayar')->take(5)->get();
+        })->whereNotNull('tanggal_bayar') // Only show actual payments
+          ->with('pinjaman')
+          ->latest('tanggal_bayar')
+          ->take(5)
+          ->get();
 
         $activePinjaman = $nasabah->pinjamans()->where('status', 'approved')->latest()->first();
         
