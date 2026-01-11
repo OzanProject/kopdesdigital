@@ -31,7 +31,7 @@
 <li class="nav-header">AKUN</li>
 
 <li class="nav-item">
-    <a href="{{ route('member.profile.index') }}" class="nav-link {{ request()->routeIs('member.profile.index') ? 'active' : '' }}">
+    <a href="{{ url('/member/profile') }}" class="nav-link {{ request()->is('member/profile*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-user"></i>
         <p>Profil Saya</p>
     </a>
