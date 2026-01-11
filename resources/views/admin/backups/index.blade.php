@@ -44,7 +44,7 @@
                                         <i class="fas fa-trash"></i> Hapus
                                     </button>
                                 </form>
-                                 <form action="{{ route('backups.restore', $backup['file_name']) }}" method="POST" class="d-inline" onsubmit="return confirm('PERINGATAN BAHAYA:\n\nApakah Anda yakin ingin me-RESTORE data ini?\n\n1. Semua data saat ini di database akan DIHAPUS dan DITIMPA dengan data dari backup ini.\n2. Proses ini tidak bisa dibatalkan.\n\nKetik OKE jika Anda yakin.');">
+                                 <form action="{{ route('backups.restore', $backup['file_name']) }}" method="POST" class="d-inline" onsubmit="return confirm('PERINGATAN BAHAYA: Restore akan MENIMPA database saat ini. Proses tidak bisa dibatalkan. Lanjutkan?');">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-danger" title="Restore Database">
                                         <i class="fas fa-history"></i> Restore
