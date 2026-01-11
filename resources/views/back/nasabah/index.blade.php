@@ -4,39 +4,46 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="card-title">Daftar Anggota</h3>
-        <div class="card-tools d-flex align-items-center ml-auto">
-            <!-- Bulk Actions (Hidden by default) -->
-            <div id="bulk-buttons" class="btn-group mr-2" style="display: none;">
-                <button type="button" class="btn btn-info btn-sm" onclick="submitBulkAction('{{ route('nasabah.print_cards') }}')">
-                    <i class="fas fa-id-card"></i> Cetak Kartu
-                </button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="confirmBulkDelete()">
-                    <i class="fas fa-trash"></i> Hapus
-                </button>
+    <div class="card-header">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-4 mb-2 mb-md-0">
+                <h3 class="card-title">Daftar Anggota</h3>
             </div>
-
-            <!-- Search Form -->
-            <form action="{{ route('nasabah.index') }}" method="GET" class="mr-2">
-                <div class="input-group input-group-sm" style="width: 200px;">
-                    <input type="text" name="search" class="form-control" placeholder="Cari Nasabah..." value="{{ request('search') }}">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-default">
-                            <i class="fas fa-search"></i>
+            
+            <div class="col-12 col-md-8">
+                <div class="d-flex flex-wrap justify-content-md-end align-items-center">
+                    <!-- Bulk Actions (Hidden by default) -->
+                    <div id="bulk-buttons" class="btn-group mr-2 mb-2 mb-md-0" style="display: none;">
+                        <button type="button" class="btn btn-info btn-sm" onclick="submitBulkAction('{{ route('nasabah.print_cards') }}')">
+                            <i class="fas fa-id-card"></i> Cetak Kartu
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmBulkDelete()">
+                            <i class="fas fa-trash"></i> Hapus
                         </button>
                     </div>
+        
+                    <!-- Search Form -->
+                    <form action="{{ route('nasabah.index') }}" method="GET" class="mr-2 mb-2 mb-md-0 flex-grow-1 flex-md-grow-0">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="search" class="form-control" placeholder="Cari Nasabah..." value="{{ request('search') }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+        
+                    <!-- Primary Actions -->
+                    <div class="btn-group mb-2 mb-md-0">
+                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#importModal">
+                            <i class="fas fa-file-excel"></i> Import
+                        </button>
+                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Tambah
+                        </a>
+                    </div>
                 </div>
-            </form>
-
-            <!-- Primary Actions -->
-            <div class="btn-group">
-                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#importModal">
-                    <i class="fas fa-file-excel"></i> Import
-                </button>
-                <a href="{{ route('nasabah.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Tambah
-                </a>
             </div>
         </div>
     </div>
