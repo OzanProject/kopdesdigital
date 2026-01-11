@@ -100,9 +100,17 @@ class PaymentController extends Controller
     {
         $transaction = SubscriptionTransaction::where('order_id', $order_id)->firstOrFail();
         
-        // Config Midtrans
+        // 1. If Manual Payment, return local status
+        if (str_contains($transaction->payment_type ?? '', 'manual')) {
+            if ($transaction->status == 'paid') {
+                return back()->with('success', 'Pembayaran Manual telah LUNAS (Disetujui Admin).');
+            } else {
+                return back()->with('manual_pending', true)->with('warning', 'Pembayaran Manual menuggu verifikasi Admin.');
+            }
+        }
+
+        // 2. Config Midtrans
         $midtrans = new MidtransService();
-        // Just calling constructor inits the Config
         
         try {
             $status = (object) \Midtrans\Transaction::status($order_id);
@@ -128,6 +136,12 @@ class PaymentController extends Controller
             return back()->with('success', 'Status pembayaran diperbarui: Lunas.');
 
         } catch (\Exception $e) {
+            // Graceful 404 Handling
+            if (str_contains($e->getMessage(), '404') || str_contains($e->getMessage(), "doesn't exist")) {
+                // If it's 404 in Midtrans but we have it as pending, it might be expired or never sent to Midtrans
+                // Let's not crash, just inform user.
+                 return back()->with('error', 'Transaksi tidak ditemukan di Payment Gateway (Mungkin Kadaluarsa). Silakan buat invoice baru.');
+            }
             return back()->with('error', 'Gagal cek status: ' . $e->getMessage());
         }
     }
