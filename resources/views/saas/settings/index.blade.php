@@ -55,15 +55,9 @@
                 <input type="email" name="company_email" class="form-control" id="company_email" value="{{ $settings['company_email'] ?? 'support@kopdes.id' }}">
             </div>
             <div class="form-group">
-                <label for="company_phone">Nomor Telepon / WhatsApp</label>
-                <input type="text" name="company_phone" class="form-control" id="company_phone" value="{{ $settings['company_phone'] ?? '+62 812-3456-7890' }}">
+                <label for="app_wa">Nomor Telepon / WhatsApp</label>
+                <input type="text" name="app_wa" class="form-control" id="app_wa" value="{{ $settings['app_wa'] ?? '' }}" placeholder="6281234567890">
             </div>
-             <div class="form-group">
-                <label for="company_address">Alamat Kantor (Opsional)</label>
-                <textarea name="company_address" class="form-control" id="company_address" rows="2">{{ $settings['company_address'] ?? '' }}</textarea>
-            </div>
-            
-            <!-- Future settings like maintenance mode can go here -->
              <div class="form-group">
                 <label for="company_address">Alamat Kantor (Opsional)</label>
                 <textarea name="company_address" class="form-control" id="company_address" rows="2">{{ $settings['company_address'] ?? '' }}</textarea>
