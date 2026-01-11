@@ -62,7 +62,7 @@ return [
                 \PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
             'dump' => [
-               'dump_binary_path' => env('DB_DUMP_BINARY_PATH', ''), // Empty by default for hosting (auto-detect)
+               'dump_binary_path' => PHP_OS_FAMILY === 'Windows' ? 'C:/laragon/bin/mysql/mysql-8.0.30-winx64/bin' : '/usr/bin',
                'use_single_transaction',
                'timeout' => 60 * 5,
                'add_extra_option' => '--column-statistics=0',
