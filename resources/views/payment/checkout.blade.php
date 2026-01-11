@@ -12,6 +12,24 @@
                 </div>
                 <h3 class="fw-bold mb-3">Selesaikan Pembayaran</h3>
                 <p class="text-muted mb-4">Invoice #{{ $transaction->order_id }}</p>
+
+                @if(session('success'))
+                    <div class="alert alert-success text-start">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger text-start">
+                        <i class="fas fa-exclamation-triangle"></i> {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('warning'))
+                    <div class="alert alert-warning text-start">
+                        <i class="fas fa-clock"></i> {{ session('warning') }}
+                    </div>
+                @endif
                 
                 <div class="bg-light p-4 rounded-3 mb-4">
                     <div class="d-flex justify-content-between mb-2">
