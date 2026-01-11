@@ -13,7 +13,7 @@
                 <p>Saldo Simpanan</p>
             </div>
             <div class="icon"><i class="ion ion-stats-bars"></i></div>
-            <a href="{{ route('simpanan.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('member.simpanan.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-4 col-6">
@@ -23,7 +23,7 @@
                 <p>Sisa Hutang</p>
             </div>
             <div class="icon"><i class="ion ion-pie-graph"></i></div>
-            <a href="{{ route('pinjaman.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('member.pinjaman.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-4 col-12">
@@ -48,10 +48,10 @@
                 <h3 class="card-title">Aksi Cepat</h3>
             </div>
             <div class="card-body p-2 d-flex justify-content-around">
-                <a href="{{ route('pinjaman.create') }}" class="btn btn-app bg-primary text-white">
+                <a href="{{ route('member.pinjaman.create') }}" class="btn btn-app bg-primary text-white">
                     <i class="fas fa-file-invoice-dollar"></i> Ajukan Pinjaman
                 </a>
-                <a href="{{ route('pinjaman.index') }}" class="btn btn-app">
+                <a href="{{ route('member.pinjaman.index') }}" class="btn btn-app">
                     <i class="fas fa-history"></i> Riwayat Pinjaman
                 </a>
                  <a href="{{ route('member.shu.index') }}" class="btn btn-app">

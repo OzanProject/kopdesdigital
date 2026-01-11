@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function edit()
+    public function index()
     {
         $user = Auth::user();
         $nasabah = $user->nasabah;
@@ -58,7 +58,8 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
-    public function printCard()
+
+    public function card()
     {
         $nasabah = Auth::user()->nasabah;
         

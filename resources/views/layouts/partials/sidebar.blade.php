@@ -36,7 +36,11 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-           @include('layouts.partials.sidebar_menu')
+           @if(auth()->user()->hasRole('anggota') || auth()->user()->hasRole('member'))
+               @include('layouts.partials.sidebar_menu_member')
+           @else
+               @include('layouts.partials.sidebar_menu')
+           @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

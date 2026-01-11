@@ -32,6 +32,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('super.dashboard', absolute: false));
         }
 
+        if ($request->user()->hasRole('anggota') || $request->user()->nasabah) {
+            return redirect()->intended(route('member.dashboard', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
