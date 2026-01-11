@@ -47,12 +47,32 @@
                     </div>
                 </div>
 
-                @if(empty($transaction->snap_token))
+                @if(isset($transaction->payment_type) && str_contains($transaction->payment_type, 'manual') && $transaction->status == 'pending')
+                    <div class="card bg-warning text-dark mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-clock"></i> Menunggu Verifikasi Admin</h5>
+                            <p class="card-text">
+                                Anda telah melakukan konfirmasi pembayaran manual. Mohon tunggu admin memverifikasi bukti transfer Anda.
+                            </p>
+                            <hr>
+                             <p class="mb-0 small">
+                                 Jika butuh bantuan, silakan hubungi Admin via WhatsApp.
+                             </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Renew Link Option (Always visible in case of expiry) -->
+                    <form action="{{ route('payment.renew', $transaction->order_id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary btn-sm w-100 mt-2">
+                             <i class="fas fa-sync-alt me-1"></i> Buat Invoice Baru (Batal)
+                        </button>
+                    </form>
+
+                @elseif(empty($transaction->snap_token))
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle"></i> Sistem pembayaran belum dikonfigurasi. Silakan hubungi admin.
                     </div>
-                    <!-- Renew Link Option -->
-                    <form action="{{ route('payment.renew', $transaction->order_id) }}" method="POST">
                 @else
                     <div id="payment-method-selector" class="mb-4">
                         <div class="btn-group w-100" role="group">
