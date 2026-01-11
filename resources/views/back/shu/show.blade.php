@@ -55,6 +55,11 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Rincian Per Anggota</h3>
+                <div class="card-tools">
+                    <a href="{{ route('shu.index') }}" class="btn btn-tool" title="Kembali">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Daftar
+                    </a>
+                </div>
             </div>
             <div class="card-body table-responsive p-0" style="height: 500px;">
                 <table class="table table-head-fixed text-nowrap">

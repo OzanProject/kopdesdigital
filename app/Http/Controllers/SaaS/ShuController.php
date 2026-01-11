@@ -121,4 +121,14 @@ class ShuController extends Controller
         $shu->update(['status' => 'published']);
         return back()->with('success', 'SHU berhasil dipublikasikan ke anggota.');
     }
+    public function destroy(Shu $shu)
+    {
+        if ($shu->koperasi_id != Auth::user()->koperasi_id) abort(403);
+        
+        // Delete related members first if not cascade (explicit is safer)
+        $shu->members()->delete();
+        $shu->delete();
+
+        return redirect()->route('shu.index')->with('success', 'Data SHU berhasil dihapus.');
+    }
 }

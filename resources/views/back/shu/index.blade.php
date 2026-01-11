@@ -42,6 +42,13 @@
                         <a href="{{ route('shu.show', $shu->id) }}" class="btn btn-info btn-xs">
                             <i class="fas fa-eye"></i> Detail
                         </a>
+                        <form action="{{ route('shu.destroy', $shu->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data SHU ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-xs">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @empty
