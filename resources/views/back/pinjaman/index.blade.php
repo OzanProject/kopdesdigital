@@ -52,11 +52,19 @@
                                 <a href="{{ route('pinjaman.edit', $pinjaman->id) }}" class="btn btn-sm btn-info" title="Review">
                                     <i class="fas fa-check-circle"></i>
                                 </a>
-                                @elseif($pinjaman->status == 'approved')
+                                    @elseif($pinjaman->status == 'approved')
                                 <button class="btn btn-sm btn-success disabled" title="Disetujui"><i class="fas fa-check"></i></button>
                                 @else
                                 <button class="btn btn-sm btn-danger disabled" title="Ditolak"><i class="fas fa-times"></i></button>
                                 @endif
+                                
+                                <form action="{{ route('pinjaman.destroy', $pinjaman->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus data pinjaman ini? Data angsuran terkait juga akan terhapus.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

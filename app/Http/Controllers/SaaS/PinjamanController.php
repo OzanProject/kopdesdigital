@@ -99,4 +99,9 @@ class PinjamanController extends Controller
 
         return back();
     }
+    public function destroy(Pinjaman $pinjaman)
+    {
+        $pinjaman->delete();
+        return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil dihapus.');
+    }
 }
