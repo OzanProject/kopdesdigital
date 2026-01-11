@@ -17,7 +17,11 @@
             Anda telah melakukan pembayaran manual via transfer bank. Admin sedang memverifikasi bukti transfer Anda.
             <br>Status: <strong>Menunggu Konfirmasi Admin</strong>.
             @php
-                 $adminWa = \App\Models\SaasSetting::where('key', 'app_wa')->value('value') ?? '6281321794279';
+                 $adminWa = \App\Models\SaasSetting::where('key', 'app_wa')->value('value') 
+                            ?? \App\Models\SaasSetting::where('key', 'company_phone')->value('value') 
+                            ?? '6281321794279';
+                 // Clean non-numeric characters just in case
+                 $adminWa = preg_replace('/[^0-9]/', '', $adminWa);
             @endphp
             <a href="https://wa.me/{{ $adminWa }}" target="_blank" class="btn btn-light btn-sm font-weight-bold ml-2 text-dark shadow-sm">
                 <i class="fab fa-whatsapp mr-1"></i> Hubungi Admin

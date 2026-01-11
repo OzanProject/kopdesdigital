@@ -64,6 +64,12 @@
                         @endif
                         <input type="file" name="favicon" class="form-control-file">
                     </div>
+                    
+                    <div class="form-group">
+                        <label>Nomor WhatsApp Admin (Untuk Support & Verifikasi)</label>
+                        <input type="text" name="app_wa" class="form-control" value="{{ $settings['app_wa'] ?? '' }}" placeholder="6281234567890">
+                        <small class="text-muted">Gunakan format internasional (tanpa + atau 0), contoh: 6281234567890.</small>
+                    </div>
                 </div>
 
                 <!-- HERO SECTION -->
