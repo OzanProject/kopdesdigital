@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4 border-right-0">
     <a href="{{ auth()->user()->hasRole('super_admin') ? route('super.dashboard') : (auth()->user()->hasRole('member') ? route('member.dashboard') : route('dashboard')) }}" 
-       class="brand-link border-bottom-0 py-3" style="background: rgba(0,0,0,0.2);">
+       class="brand-link border-bottom-0 py-3 d-flex align-items-center" style="background: rgba(0,0,0,0.2); height: auto; min-height: 60px;">
         
         @if(auth()->user()->hasRole('super_admin'))
             @php $saasLogo = \App\Models\SaasSetting::where('key', 'app_logo')->value('value'); @endphp
@@ -11,9 +11,9 @@
             </span>
         @else
             <img src="{{ isset($koperasi) && $koperasi->logo ? asset('storage/' . $koperasi->logo) : asset('adminlte3/dist/img/AdminLTELogo.png') }}" 
-                 alt="Logo" class="brand-image img-circle elevation-2 shadow-sm" style="opacity: 1; border: 2px solid rgba(255,255,255,0.2);">
-            <span class="brand-text font-weight-bolder ls-1" style="font-size: 0.9rem; line-height: 1.2;">
-                {{ isset($koperasi) ? Str::limit($koperasi->nama, 20) : 'SaaS Koperasi' }}
+                 alt="Logo" class="brand-image img-circle elevation-2 shadow-sm" style="opacity: 1; border: 2px solid rgba(255,255,255,0.2); float: none; margin-right: 10px;">
+            <span class="brand-text font-weight-bolder ls-1" style="font-size: 0.9rem; line-height: 1.2; white-space: normal; display: inline-block; vertical-align: middle;">
+                {{ isset($koperasi) ? $koperasi->nama : 'SaaS Koperasi' }}
             </span>
         @endif
     </a>
