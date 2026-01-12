@@ -17,7 +17,15 @@
                         <i class="fas fa-shield-alt text-info mr-3 fa-2x"></i>
                         <div class="small text-dark">
                             <strong>Informasi Penting:</strong><br>
-                            Setiap pengajuan akan diverifikasi oleh Admin. Suku bunga dan jadwal angsuran akan ditetapkan secara resmi setelah status disetujui.
+                            Setiap pengajuan akan diverifikasi oleh Admin.
+                            @php
+                                $bunga = auth()->user()->nasabah->koperasi->settings['default_bunga_persen'] ?? 0;
+                            @endphp
+                            @if($bunga > 0)
+                                Suku bunga yang berlaku saat ini adalah <strong>{{ $bunga }}% per bulan</strong> (Flat).
+                            @else
+                                Suku bunga dan jadwal angsuran akan ditetapkan secara resmi setelah status disetujui.
+                            @endif
                         </div>
                     </div>
 

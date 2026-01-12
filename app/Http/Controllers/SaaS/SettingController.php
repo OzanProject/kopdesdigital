@@ -48,14 +48,21 @@ class SettingController extends Controller
         $koperasi->update($data);
 
         // Handle Settings (Tenor Options)
+        // Handle Settings (Tenor Options)
         if ($request->has('tenor_options')) {
             $settings = $koperasi->settings ?? [];
-            // Clean and validate tenor input
+            
+            // Tenor Options Logic
             $tenors = array_filter(array_map('trim', explode(',', $request->tenor_options)));
-            // Ensure they are integers and sort them
             $tenors = array_map('intval', $tenors);
             sort($tenors);
             $settings['tenor_options'] = $tenors;
+
+            // Default Interest Rate Logic
+            if ($request->has('default_bunga_persen')) {
+                $settings['default_bunga_persen'] = $request->default_bunga_persen;
+            }
+
             $data['settings'] = $settings;
         }
 

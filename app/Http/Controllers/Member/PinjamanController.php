@@ -50,7 +50,7 @@ class PinjamanController extends Controller
             'kode_pinjaman' => \App\Models\Pinjaman::generateKode($nasabah->koperasi_id),
             'jumlah_pengajuan' => $request->jumlah,
             'tenor_bulan' => $request->tenor,
-            'bunga_persen' => 0, // Admin will determine? or default
+            'bunga_persen' => $nasabah->koperasi->settings['default_bunga_persen'] ?? 0, 
             'status' => 'pending',
             'tanggal_pengajuan' => now(),
             'keterangan' => $request->keterangan,

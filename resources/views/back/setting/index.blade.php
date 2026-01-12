@@ -151,7 +151,21 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="small font-weight-bold text-primary">Bunga / Bulan (%)</label>
+                                    <div class="input-group shadow-sm">
+                                        <input type="number" step="0.01" name="default_bunga_persen" class="form-control" 
+                                               value="{{ old('default_bunga_persen', $koperasi->settings['default_bunga_persen'] ?? 0) }}" 
+                                               placeholder="0.0">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg-white border-left-0">%</span>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Persentase bunga flat.</small>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
                                 <div class="form-group">
                                     <label class="small font-weight-bold">Opsi Tenor Kredit (Bulan)</label>
                                     @php
