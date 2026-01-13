@@ -50,6 +50,18 @@ class RegisteredTenantController extends Controller
                     return $query->where('is_active', true);
                 }),
             ],
+            'promo_code' => ['nullable', 'string', function ($attribute, $value, $fail) {
+                if ($value) {
+                    $promo = \App\Models\Discount::where('code', strtoupper($value))->first();
+                    if (!$promo) {
+                        $fail('Kode promo tidak ditemukan.');
+                        return;
+                    }
+                    if (!$promo->isValid()) {
+                        $fail('Kode promo sudah tidak berlaku atau habis.');
+                    }
+                }
+            }],
         ], [
             'email.unique' => 'Email ini sudah digunakan. Silakan login atau gunakan email lain.',
             'koperasi_name.unique' => 'Nama Koperasi ini sudah terdaftar.',
@@ -83,14 +95,47 @@ class RegisteredTenantController extends Controller
 
                 // 3. Create Transaction
                 $orderId = 'INV-' . time() . '-' . $koperasi->id;
-                $isFree = $package->price <= 0;
+                $originalPrice = $package->price;
+                $finalPrice = $originalPrice;
+                $discountId = null;
+                $discountAmount = 0;
+
+                // Handle Promo Code
+                if ($request->filled('promo_code')) {
+                    $promo = \App\Models\Discount::where('code', strtoupper($request->promo_code))->first();
+
+                    if ($promo && $promo->isValid()) {
+                        $discountId = $promo->id;
+                        
+                        if ($promo->type == 'fixed') {
+                            $discountAmount = $promo->amount;
+                        } elseif ($promo->type == 'percent') {
+                            $discountAmount = ($originalPrice * $promo->amount) / 100;
+                        }
+
+                        // Ensure price doesn't go below 0
+                        if ($discountAmount > $originalPrice) {
+                            $discountAmount = $originalPrice;
+                        }
+
+                        $finalPrice = $originalPrice - $discountAmount;
+                        
+                        // Increment usage
+                        $promo->increment('used_count');
+                    }
+                }
+
+                $isFree = $finalPrice <= 0;
 
                 $transaction = \App\Models\SubscriptionTransaction::create([
                     'koperasi_id' => $koperasi->id,
                     'subscription_package_id' => $package->id,
                     'order_id' => $orderId,
-                    'amount' => $package->price,
+                    'amount' => $finalPrice,
                     'status' => $isFree ? 'paid' : 'pending',
+                    // Assuming columns exist from migration 2026_01_10_023142_add_discount_columns...
+                    'discount_id' => $discountId,
+                    'discount_amount' => $discountAmount,
                 ]);
 
                 if ($isFree) {

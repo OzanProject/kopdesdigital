@@ -129,6 +129,18 @@
                                         </div>
 
                                         <div class="col-md-6">
+                                            <label class="form-label">Kode Promo (Opsional)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text border-end-0"><i class="fas fa-tag"></i></span>
+                                                <input type="text" name="promo_code" class="form-control border-start-0 @error('promo_code') is-invalid @enderror" 
+                                                       value="{{ old('promo_code') }}" placeholder="Punya kode diskon?">
+                                            </div>
+                                            @error('promo_code')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <label class="form-label">Nama Koperasi</label>
                                             <div class="input-group">
                                                 <span class="input-group-text border-end-0"><i class="fas fa-building"></i></span>
