@@ -114,8 +114,11 @@ class SubscriptionController extends Controller
     {
         $request->validate([
             'code' => 'required|string',
-            'amount' => 'required|numeric'
+            'package_id' => 'required|exists:subscription_packages,id'
         ]);
+
+        $package = SubscriptionPackage::find($request->package_id);
+        $amount = $package->price;
 
         $discount = \App\Models\Discount::where('code', strtoupper($request->code))->first();
 
@@ -130,19 +133,19 @@ class SubscriptionController extends Controller
         if ($discount->type == 'fixed') {
             $discountValue = $discount->amount;
         } else {
-            $discountValue = ($request->amount * $discount->amount) / 100;
+            $discountValue = ($amount * $discount->amount) / 100;
         }
 
-        if ($discountValue > $request->amount) {
-            $discountValue = $request->amount;
+        if ($discountValue > $amount) {
+            $discountValue = $amount;
         }
-
+        
         return response()->json([
             'valid' => true,
             'code' => $discount->code,
             'discount_amount' => $discountValue,
-            'final_amount' => $request->amount - $discountValue,
-            'message' => 'Kode promo berhasil digunakan!'
+            'final_amount' => $amount - $discountValue,
+            'message' => 'Kode promo berhasil digunakan! Hemat Rp ' . number_format($discountValue, 0, ',', '.')
         ]);
     }
 

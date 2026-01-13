@@ -57,7 +57,15 @@ class LandingController extends Controller
     {
         $settings = \App\Models\SaasSetting::all()->pluck('value', 'key');
         $testimonials = \App\Models\LandingTestimonial::latest()->get();
-        return view('landing.pages.testimonials', compact('settings', 'testimonials'));
+        
+        // Fetch cooperatives for "Trusted By" section
+        $clients = \App\Models\Koperasi::where('status', 'active')
+            ->whereNotNull('logo')
+            ->latest()
+            ->take(12) // Limit for display
+            ->get();
+            
+        return view('landing.pages.testimonials', compact('settings', 'testimonials', 'clients'));
     }
 
     public function faq()

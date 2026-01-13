@@ -261,3 +261,71 @@
     </div>
 </div>
 @endsection
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        // Copy Code Functionality
+        $('.copy-code').click(function() {
+            var code = $(this).text();
+            navigator.clipboard.writeText(code).then(function() {
+                toastr.success('Kode promo ' + code + ' disalin!');
+            });
+            // Also fill inputs
+            $('input[name="discount_code"]').val(code);
+            $('html, body').animate({
+                scrollTop: $("#upgrade-section").offset().top
+            }, 500);
+        });
+
+        // Scroll to
+        $('.scroll-to').click(function(e){
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $($(this).attr('href')).offset().top
+            }, 500);
+        });
+
+        // Check Coupon AJAX
+        $('.btn-check-coupon').click(function() {
+            var btn = $(this);
+            var form = btn.closest('form');
+            var codeInput = form.find('input[name="discount_code"]');
+            var packageId = form.find('input[name="package_id"]').val();
+            var msgContainer = form.find('.coupon-msg');
+            var code = codeInput.val();
+
+            if (!code) {
+                msgContainer.html('<span class="text-danger small">Masukkan kode dulu.</span>');
+                return;
+            }
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+            $.ajax({
+                url: "{{ route('subscription.check-coupon') }}",
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    code: code,
+                    package_id: packageId
+                },
+                success: function(response) {
+                    btn.prop('disabled', false).text('Cek');
+                    if(response.valid) {
+                        msgContainer.html('<span class="text-success small"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
+                        codeInput.addClass('is-valid').removeClass('is-invalid');
+                    } else {
+                        msgContainer.html('<span class="text-danger small"><i class="fas fa-times-circle"></i> ' + response.message + '</span>');
+                        codeInput.addClass('is-invalid').removeClass('is-valid');
+                    }
+                },
+                error: function(xhr) {
+                    btn.prop('disabled', false).text('Cek');
+                    msgContainer.html('<span class="text-danger small">Terjadi kesalahan sistem.</span>');
+                }
+            });
+        });
+    });
+</script>
+@endpush

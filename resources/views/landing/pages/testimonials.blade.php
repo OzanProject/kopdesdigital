@@ -81,14 +81,36 @@
     <div class="py-5 bg-light border-top border-bottom">
         <div class="container">
             <p class="text-center small text-muted fw-bold text-uppercase ls-2 mb-4">Telah Digunakan Oleh</p>
-            <div class="row align-items-center justify-content-center g-5 opacity-50 filter-grayscale">
-                <div class="col-4 col-md-2 text-center"><i class="fas fa-university fa-2x"></i></div>
-                <div class="col-4 col-md-2 text-center"><i class="fas fa-landmark fa-2x"></i></div>
-                <div class="col-4 col-md-2 text-center"><i class="fas fa-building fa-2x"></i></div>
-                <div class="col-4 col-md-2 text-center"><i class="fas fa-city fa-2x"></i></div>
-            </div>
+            @if($clients->count() > 0)
+                <div class="row align-items-center justify-content-center g-5 client-logos">
+                    @foreach($clients as $client)
+                        <div class="col-4 col-md-3 col-lg-2 text-center">
+                            <img src="{{ asset('storage/' . $client->logo) }}" 
+                                 alt="{{ $client->nama }}" 
+                                 class="img-fluid grayscale-img" 
+                                 style="max-height: 50px; opacity: 0.6; transition: all 0.3s;"
+                                 data-toggle="tooltip" title="{{ $client->nama }}">
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center text-muted small">
+                    <em>Bergabunglah dengan ratusan koperasi lainnya.</em>
+                </div>
+            @endif
         </div>
     </div>
+
+    <style>
+        .grayscale-img {
+            filter: grayscale(100%);
+        }
+        .grayscale-img:hover {
+            filter: grayscale(0%);
+            opacity: 1 !important;
+            transform: scale(1.1);
+        }
+    </style>
 
     @include('landing.sections.cta')
 </div>
