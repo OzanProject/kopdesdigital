@@ -52,7 +52,7 @@
                         </td>
                         <td class="align-middle">
                             <div class="font-weight-bold text-dark">{{ $penarikan->nasabah->nama }}</div>
-                            <small class="text-muted text-uppercase">{{ $nasabah->no_anggota }}</small>
+                            <small class="text-muted text-uppercase">{{ $penarikan->nasabah->no_anggota }}</small>
                         </td>
                         <td class="align-middle text-right font-weight-bold text-amount-out fs-5">
                             - Rp {{ number_format($penarikan->jumlah, 0, ',', '.') }}
