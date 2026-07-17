@@ -180,6 +180,76 @@
                 </tr>
             </tfoot>
         </table>
+    @elseif($jenis == 'anggota')
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>No Anggota</th>
+                    <th>Nama & NIK</th>
+                    <th>Telepon / Alamat</th>
+                    <th>Tgl Bergabung</th>
+                    <th>Total Simpanan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($data as $item)
+                <tr>
+                    <td class="center">{{ $loop->iteration }}</td>
+                    <td class="center">{{ $item->no_anggota }}</td>
+                    <td><b>{{ $item->nama }}</b><br><small>NIK: {{ $item->nik ?? '-' }}</small></td>
+                    <td>{{ $item->telepon ?? '-' }}<br><small>{{ $item->alamat ?? '-' }}</small></td>
+                    <td class="center">{{ \Carbon\Carbon::parse($item->tanggal_bergabung)->format('d/m/Y') }}</td>
+                    <td class="amount">Rp {{ number_format($item->total_simpanan ?? 0, 0, ',', '.') }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    @elseif($jenis == 'shu')
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tahun Pembukuan</th>
+                    <th>Total SHU</th>
+                    <th>Alokasi Anggota</th>
+                    <th>Total Dibagikan</th>
+                    <th>Status</th>
+                    <th>Tanggal Input</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $totalSeluruhSHU = 0; $totalSeluruhDibagikan = 0; @endphp
+                @foreach($data as $item)
+                <tr>
+                    <td class="center">{{ $loop->iteration }}</td>
+                    <td class="center">{{ $item->tahun }}</td>
+                    <td class="amount">Rp {{ number_format($item->total_shu, 0, ',', '.') }}</td>
+                    <td class="center">
+                        {{ $item->persentase_anggota }}%<br>
+                        <small>(Modal {{ $item->persentase_modal }}%, Usaha {{ $item->persentase_usaha }}%)</small>
+                    </td>
+                    <td class="amount text-green">Rp {{ number_format($item->total_dibagikan, 0, ',', '.') }}</td>
+                    <td class="center">{{ strtoupper($item->status) }}</td>
+                    <td class="center">{{ $item->created_at->format('d/m/Y') }}</td>
+                </tr>
+                @php 
+                    $totalSeluruhSHU += $item->total_shu; 
+                    $totalSeluruhDibagikan += $item->total_dibagikan;
+                @endphp
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="2" class="center">TOTAL</td>
+                    <td class="amount">Rp {{ number_format($totalSeluruhSHU, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td class="amount text-green">Rp {{ number_format($totalSeluruhDibagikan, 0, ',', '.') }}</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
     @endif
 
     <div class="ttd-container">

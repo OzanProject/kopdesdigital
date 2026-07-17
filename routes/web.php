@@ -40,6 +40,6 @@ Route::middleware(['auth'])->prefix('member')->name('member.')->group(function()
     Route::resource('shu', \App\Http\Controllers\Member\ShuController::class)->only(['index']);
     
     // Profile Routes (Member)
-    Route::get('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/profile/card', [\App\Http\Controllers\Member\ProfileController::class, 'card'])->name('profile.card');
+    Route::get('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/card', [\App\Http\Controllers\Member\ProfileController::class, 'printCard'])->name('profile.card');
 });

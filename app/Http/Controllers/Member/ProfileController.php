@@ -10,26 +10,24 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function edit()
     {
         $user = Auth::user();
         $nasabah = $user->nasabah;
 
-        return view('member.profile.edit', compact('user', 'nasabah'));
-    }
+        // If a member doesn't have a nasabah record yet, we might want to handle it or just pass null
+        // However, it's safer to ensure they have it or show an error
+        abort_if(!$nasabah, 404, 'Data Nasabah tidak ditemukan.');
 
-    /**
-     * Alias for index to handle stale route cache on server
-     */
-    public function edit() 
-    {
-        return $this->index();
+        return view('member.profile.edit', compact('user', 'nasabah'));
     }
 
     public function update(Request $request)
     {
         $user = Auth::user();
         $nasabah = $user->nasabah;
+
+        abort_if(!$nasabah, 404, 'Data Nasabah tidak ditemukan.');
 
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -67,9 +65,11 @@ class ProfileController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
-    public function card()
+    public function printCard()
     {
         $nasabah = Auth::user()->nasabah;
+        
+        abort_if(!$nasabah, 404, 'Data Nasabah tidak ditemukan.');
         
         // reuse the admin print view, wrapping single nasabah in a collection
         $nasabahs = collect([$nasabah]);
